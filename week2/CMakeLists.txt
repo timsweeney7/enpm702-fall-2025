@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.28)
 project(week2 VERSION 1.0 LANGUAGES C CXX)
 
-# add_compile_options(-Wall -pedantic-errors)
 
 include_directories(include)
 add_executable(week2_cpp src/week2.cpp)
