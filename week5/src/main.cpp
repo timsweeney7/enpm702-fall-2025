@@ -20,6 +20,13 @@
 // //==================
 // /*      </1>      */
 // //==================
+int add_numbers(int a, int b);
+
+int add_numbers(int a, int b){
+    return (a + b);
+}
+
+
 
 // //==================
 // /*      </2>      */
@@ -269,6 +276,7 @@
 
 int main(int argc, char* argv[])
 {
+    std::cout << add_numbers(1, 2); 
     //==================
     /*     Exercise   */
     //==================

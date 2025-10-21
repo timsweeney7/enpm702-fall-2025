@@ -26,10 +26,10 @@ int main() {
   // Quality tracking variables
   const std::unordered_map<std::string, int> initial_counts{{"LIDAR", 0},
                                                             {"Camera", 0}};
+  // Used for printing sensor statuses                                                          
   const std::unordered_map<bool, std::string> status_str{{true, "GOOD"},
                                                          {false, "POOR"}};                                                          
-  // std::unordered_map<std::string, int> valid_readings{initial_counts};
-  // std::unordered_map<std::string, int> total_readings{initial_counts};
+
 
   // Variables for calculating summary statistics
   double total_lidar_avg_distance{0.0};
@@ -49,12 +49,15 @@ int main() {
 
   std::cout << "=== ROBOT MULTI-SENSOR SYSTEM ===\n\n";
 
-  // ========================================================================
-  // Step 1: Data Generation and Storage
-  // ========================================================================
+  // ----
+  //  Generate random data for sensors
+  // ----
+  
+
+  // instantiate random number generators
   std::random_device rd;
   std::mt19937 gen{rd()};
-
+  // instantiate distributions for each sensor bounded by limits in header file
   std::uniform_real_distribution<> lidar_dis{lidar_min_range, lidar_max_range};
   std::uniform_int_distribution<> cam_dis{rgb_min, rgb_max};
   std::uniform_real_distribution<> imu_dis{imu_min_rotation, imu_max_rotation};
@@ -64,31 +67,23 @@ int main() {
   std::cout << "Generating sensor data for 5 timestamps...\n" << std::endl;
 
   // fill the timestamp sensor readings
-  for(int i=0; i<num_timestamps; i++){
+  for(int i{0}; i<num_timestamps; i++){
     // lidar
     std::vector<double> vec_distance_readings;
-    for(int ii=0; ii<lidar_readings_count; ii++){
+    for(int ii{0}; ii<lidar_readings_count; ii++){
       vec_distance_readings.push_back(lidar_dis(gen));
     }
     // camera
-    std::vector<int> vec_cam_readings;
-    for(int ii=0; ii<cam_readings_count; ii++){
-      vec_cam_readings.push_back(cam_dis(gen));
-    }
     std::tuple<int, int, int> tup_cam_readings{
-      vec_cam_readings[0],
-      vec_cam_readings[1],
-      vec_cam_readings[2],
+      cam_dis(gen),
+      cam_dis(gen),
+      cam_dis(gen)
     };
     // IMU
-    std::vector<int> vec_imu_readings;
-    for(int ii=0; ii<imu_readings_count; ii++){
-      vec_imu_readings.push_back(imu_dis(gen));
-    }
     std::tuple<double, double, double> tup_imu_readings{
-      vec_imu_readings[0],
-      vec_imu_readings[1],
-      vec_imu_readings[2],
+      imu_dis(gen),
+      imu_dis(gen),
+      imu_dis(gen),
     };
     // struct TimestampData
     TimestampData timestamp_data{
@@ -97,34 +92,44 @@ int main() {
       tup_imu_readings,
       i
     };
+    // Add TimestampData to the end of the sensor_readings vector
     sensor_readings.push_back(timestamp_data);
   }
   
-  // ========================================================================
-  // Step 2: Data Processing Loop
-  // ========================================================================
-  for (const auto& data : sensor_readings) {
-    // ========================================================================
-    // Step 3: Sensor-Specific Processing
-    // ========================================================================
 
-    double lidar_avg_distance = 
+  // ----
+  //  Process time stamped sensor data
+  // ----
+
+  for (const auto& data : sensor_readings) {
+
+    // Calculate the average lidar distance for this iteration's TimestampData
+    double lidar_avg_distance{ 
       std::accumulate( 
         data.lidar_readings.begin(),
         data.lidar_readings.end(),
         0.0f
-       ) / data.lidar_readings.size();
+       ) / data.lidar_readings.size()
+    };
+    
+    // Add avg for timestamp to running total of averages.
+    // Will be divided after loop completes
     total_lidar_avg_distance += lidar_avg_distance;
     bool lidar_status{true};
     int obstacles_detected{0};
-    for(float obstacle_dist : data.lidar_readings){
+
+    // check each lidar reading per Timestamp
+    for(double obstacle_dist : data.lidar_readings){
+      // if below obstacle threshold, increment obstacles detected count
       if(obstacle_dist < obstacle_threshold){
         obstacles_detected++;
       }
+      // if below the minimum value, set status to poor
       if(obstacle_dist <= lidar_min_valid){
         lidar_status = false;
       }
     }
+    // if status is good, increment tracking stats
     if(lidar_status){
       total_valid_readings++;
       lidar_valid_readings++;
@@ -132,11 +137,15 @@ int main() {
 
     total_obstacles_detected += obstacles_detected;
 
+
     const auto [r, g, b] {data.camera_readings};
     bool camera_status{true};
+    // use a string for tracking camera mode
     std::string camera_mode_str{"NIGHT"};
     total_camera_brightness = (r+g+b) / 3.0;
+    // add camera brightness to running count.  Will be averaged after loop
     average_camera_brightness += total_camera_brightness;
+    // determine camera mode.  Update tracking stats
     if (total_camera_brightness > day_night_threshold){
       camera_mode_str = "DAY";
       day_mode_count++;
@@ -144,6 +153,7 @@ int main() {
     else{
       night_mode_count++;
     }
+    // determine if data is valid
     if (total_camera_brightness < brightness_threshold){
       camera_status = false;
     }
@@ -153,9 +163,13 @@ int main() {
     }
 
     const auto [roll, pitch, yaw] = data.imu_readings;
+    // use string for tracking imu mode
     std::string imu_mode_str{"STABLE"};
+    // calculate RSS of angles
     double total_rotation_mag {sqrt( pow(roll, 2.0) + pow(pitch, 2.0) + pow(yaw, 2.0) )};
+    // Add to running total. Will be averaged after loop
     average_imu_rotations += total_rotation_mag;
+    // if any angle is outside threshold set mode to unstable. increment tracking variables
     if(
       abs(roll) > imu_stability_threshold or 
       abs(pitch) > imu_stability_threshold or
@@ -170,50 +184,35 @@ int main() {
     total_valid_readings++; //IMU data is always valid
     imu_valid_readings++;
 
-
-    // print out statistics
+    // set printing float precision to 2
+    std::cout << std::fixed << std::setprecision(2);
+    // print out LIDAR statistics for this timestamp
     std::cout << "Processing Timestamp: " << data.timestamp << std::endl;
     std::cout << " - LIDAR [";
     for (auto lidar_reading : data.lidar_readings){
-      std::cout << std::fixed << std::setprecision(2) << lidar_reading << " ";
+      std::cout << lidar_reading << " ";
     }
     std::cout << "]" << std::endl;
-    std::cout << std::fixed << std::setprecision(2) 
-      << "    Avg: " << lidar_avg_distance <<"m, Obstacles: " << obstacles_detected
-      << ", Status: " << status_str.at(lidar_status) << std::endl;
+    std::cout << "    Avg: " << lidar_avg_distance <<"m, Obstacles: " 
+      << obstacles_detected << ", Status: " << status_str.at(lidar_status) << std::endl;
+    
+    // print out CAMERA statistics for this timestamp
+    std::cout << " - Camera (" << r << " " << g << " " << b << ")\n";
+    std::cout << "    Brightness: " << total_camera_brightness <<", Mode: " 
+      << camera_mode_str << ", Status: " << status_str.at(camera_status) << std::endl;
 
-    auto arr_cam_readings = std::array<int, 3>{{
-        std::get<0>(data.camera_readings),
-        std::get<1>(data.camera_readings),
-        std::get<2>(data.camera_readings)
-    }};
-    std::cout << " - Camera (";
-    for (auto cam_reading : arr_cam_readings){
-      std::cout << cam_reading << " ";
-    }
-    std::cout << ")" << std::endl;
-    std::cout << std::fixed << std::setprecision(2) 
-      << "    Brightness: " << total_camera_brightness <<", Mode: " << camera_mode_str
-      << ", Status: " << status_str.at(camera_status) << std::endl;
-
-    auto arr_imu_readings = std::array<double, 3>{{
-        std::get<0>(data.imu_readings),
-        std::get<1>(data.imu_readings),
-        std::get<2>(data.imu_readings)
-    }};
-    std::cout << " - IMU (";
-    for (auto imu_reading : arr_imu_readings){
-      std::cout << std::fixed << std::setprecision(2) << imu_reading << " ";
-    }
-    std::cout << ")" << std::endl;
+    // print out IMU statistics for this timestamp
+    std::cout << " - IMU ("  << roll << ", " << pitch << ", " << yaw << ")" << std::endl;
     std::cout << std::fixed << std::setprecision(1) 
       << "    Total rotation: " << total_rotation_mag <<" deg, Mode: " << imu_mode_str
       << ", Status: " << status_str.at(true) << std::endl;    
 
     std::cout << "\n";
-
-
   }
+
+  // ----
+  //  Calculate summary data for all timestamped data
+  // ----
 
   total_lidar_avg_distance /= num_timestamps;
   average_camera_brightness /= num_timestamps;
@@ -223,15 +222,11 @@ int main() {
   double camera_valid_percent{(double)camera_valid_readings / ((double)num_timestamps) * 100};
   double imu_valid_percent{(double)imu_valid_readings / ((double)num_timestamps) * 100};
 
-  // ========================================================================
-  // STEP 5: Summary Statistics and Display
-  // ========================================================================
   std::cout << "=== SUMMARY STATISTICS ===\n";
 
   std::cout << "Total Readings Processed: " << num_timestamps * 3 << std::endl;
   std::cout << std::fixed << std::setprecision(1) 
     << "Valid readings: " << total_valid_readings << "(" << valid_percent << "%)\n" << std::endl;
-  
   
 
   std::cout << "Sensor Reliability Report:" << "\n";
