@@ -1,7 +1,7 @@
 /**
  * @file week5.cpp
  * @author Zeid Kootbally (zeidk@umd.edu)
- * @brief Code snippets for lecture 4 on STL containers
+ * @brief Code snippets for lecture 5 on Functions (Basic Topics)
  * @version 1.0
  * @date 2025-10-07
  *
