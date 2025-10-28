@@ -3,7 +3,7 @@ project(week5 VERSION 1.0 LANGUAGES C CXX)
 
 
 
-add_executable(week6_cpp src/main.cpp src/week6.cpp)
+add_executable(week6_cpp src/main.cpp)
 target_include_directories(week6_cpp PRIVATE include)
 
 # Set C++17 standard for the targets
