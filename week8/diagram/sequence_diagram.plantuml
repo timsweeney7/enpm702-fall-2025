@@ -1,0 +1,51 @@
+@startuml
+!theme mono
+
+actor Driver as D
+participant Vehicle as V
+participant Engine as E
+participant Route as R
+
+== Take control ==
+D -> V : takeControl(v: Vehicle)
+V --> D : control granted
+
+== Attempt to start engine ==
+D -> V : startEngine()
+activate V
+alt [isRunning == false]
+  V -> E : start()
+  E --> V : started
+  V -> V : set isRunning = true
+  V --> D : engine started
+else [isRunning == true]
+  V --> D : already running
+end
+deactivate V
+
+== Drive ==
+D -> V : drive()
+activate V
+
+opt [route assigned]
+  V -> R : getNextSegment()
+  R --> V : segment data
+
+  loop for each segment
+    V -> E : adjustPower(speed/grade)
+    E --> V : torque delivered
+  end
+end
+
+V --> D : progress update
+deactivate V
+
+== Stop and release ==
+D -> V : stopEngine()
+V -> E : stop()
+E --> V : stopped
+V -> V : set isRunning = false
+
+D -> V : releaseControl()
+V --> D : control released
+@enduml

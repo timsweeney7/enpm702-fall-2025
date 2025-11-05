@@ -83,8 +83,8 @@ Technical Constraints
 
    * - **Constraint**
      - **Description**
-   * - Layered Architecture
-     - Presentation → Application → Domain; Application ↔ Infrastructure via repositories/gateways; Domain independent of frameworks.
+   * - Namespace Organization
+     - All domain classes (Vehicle, Car, Truck, Train, Engine, Driver, Route) shall be encapsulated within the ``transportation`` namespace to provide logical grouping and prevent naming conflicts.
    * - Encapsulation
      - Drivers shall not call Engine directly. All powertrain operations pass through the Vehicle API.
    * - Composition Rule
@@ -95,6 +95,58 @@ Technical Constraints
      - Diagram types are language agnostic (e.g., ``String``), and mapping to concrete types (e.g., ``std::string``) is an implementation detail.
    * - Error Handling
      - Commands must return typed results or exceptions with machine-readable codes and human-readable messages.
+
+------------------------
+Implementation Guidance
+------------------------
+
+**C++ Specific Constraints:**
+
+All domain entities in the C++ implementation shall adhere to the following conventions:
+
+- All domain classes shall be declared within the ``transportation`` namespace
+- Header files shall use ``#pragma once`` or include guards with the pattern ``TRANSPORTATION_CLASSNAME_HPP``
+- Member variables shall use trailing underscore convention (e.g., ``color_``, ``model_``, ``is_running_``)
+- Pass ``std::string`` parameters as ``const std::string&`` in constructors and methods to avoid unnecessary copies
+- Use member initializer lists for all constructor initialization to ensure direct initialization and proper const/reference member handling
+- Abstract methods shall be marked with ``= 0`` pure virtual specifier
+- Class and method documentation shall follow Doxygen format with ``@file``, ``@class``, ``@brief``, ``@param``, and ``@return`` tags
+- Virtual destructors shall be provided for all polymorphic base classes
+
+**Namespace Structure:**
+
+.. code-block:: cpp
+
+   namespace transportation {
+       // Core domain entities
+       class Vehicle;      // Abstract base class
+       class Car;          // Concrete vehicle type
+       class Truck;        // Concrete vehicle type
+       class Train;        // Concrete vehicle type
+       class Engine;       // Powertrain component
+       class Driver;       // Control actor
+       class Route;        // Navigation entity
+   }
+
+**Example Usage:**
+
+.. code-block:: cpp
+
+   #include "vehicle.hpp"
+   #include "car.hpp"
+   
+   int main() {
+       transportation::Car my_car("Red", "Sedan", 180);
+       transportation::Driver driver("John Doe", "DL12345");
+       
+       driver.takeControl(my_car);
+       my_car.startEngine();
+       my_car.drive();
+       my_car.stopEngine();
+       driver.releaseControl();
+       
+       return 0;
+   }
 
 ----------------
 Success Criteria
@@ -118,6 +170,8 @@ Success Criteria
      - Static analysis reports **0** direct dependencies from Presentation to Domain or Infrastructure; only Application mediates.
    * - Observability
      - Logs contain complete audit trails (control, engine, routing) with **no missing events** in end-to-end tests across **N ≥ 50** scripted scenarios.
+   * - Namespace Compliance
+     - All domain classes reside within ``transportation`` namespace; static analysis confirms zero global namespace pollution from domain entities.
 
 -------------------------
 Assumptions and Scope
@@ -127,12 +181,18 @@ Assumptions and Scope
 - A Driver may or may not be in control at any given time.  
 - A Vehicle may follow **zero or one** current Route; Routes may be reused across vehicles over time.  
 - Real hardware effects are simulated; timings refer to software execution in the target environment.
+- All domain entities are organized within the ``transportation`` namespace in the C++ implementation.
+- Language-agnostic design allows implementation in multiple programming languages while maintaining conceptual integrity.
 
 -----------------------
 Verification Approach
 -----------------------
 
-- **Unit tests** for Vehicle state guards, Engine delegation, and subtype-specific ``drive()`` behavior.  
-- **Integration tests** for Driver–Vehicle interactions and Route assignment and traversal.  
-- **Contract tests** for repository and gateway adapters (Infrastructure) to ensure stable interfaces.  
-- **Static analysis** for dependency direction and absence of forbidden couplings.
+- **Unit tests** for Vehicle state guards, Engine delegation, and subtype-specific ``drive()`` behavior within the ``transportation`` namespace.  
+- **Integration tests** for Driver–Vehicle interactions and Route assignment and traversal across namespace boundaries.  
+- **Contract tests** for repository and gateway adapters (Infrastructure) to ensure stable interfaces with domain entities.  
+- **Static analysis** for dependency direction, absence of forbidden couplings, proper namespace usage, and cyclic dependency metrics.
+- **Namespace verification** to ensure all domain classes are properly encapsulated within ``transportation`` and no global namespace pollution occurs.
+- **Performance tests** to validate engine operations complete within 200 ms and route segment retrieval within 50 ms under nominal load.
+- **Safety tests** to verify invalid state transitions are properly rejected with appropriate error codes in 100% of negative test cases.
+- **Code coverage analysis** ensuring > 95% branch coverage on polymorphic drive logic across all vehicle subtypes.

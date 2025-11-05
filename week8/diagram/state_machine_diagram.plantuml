@@ -1,0 +1,65 @@
+@startuml
+!theme mono
+skinparam state {
+  StartColor black
+  EndColor black
+}
+
+title Vehicle State Machine
+
+' External events (from Driver) used in transitions:
+' - takeControl(v)
+' - releaseControl()
+' - startEngine()
+' - stopEngine()
+' - drive()
+' Internal/derived events:
+' - engineStarted / engineFailed
+' - routeAssigned / routeCleared
+
+[*] --> Uncontrolled : system init
+Uncontrolled --> Controlled : takeControl(v)
+Controlled --> Uncontrolled : releaseControl()
+
+state Controlled {
+  [*] --> EngineOff
+
+  ' -------- Engine Off --------
+  state EngineOff {
+    [*] --> Ready
+    Ready : entry / isRunning=false
+  }
+
+  EngineOff --> EngineOn : startEngine() / delegate to Engine.start()
+  EngineOff --> Fault : startEngine() / engineFailed
+
+  ' -------- Engine On (composite) --------
+  state EngineOn {
+    [*] --> Idle
+    Idle : entry / isRunning=true
+
+    Idle --> Driving : drive()
+    Driving : do / regulate speed, query Route (if assigned), adjust Engine power
+    Driving --> Idle : stopEngine() [defer stop until stationary] / brake to stop
+  }
+
+  EngineOn --> EngineOff : stopEngine() / delegate to Engine.stop(), isRunning=false
+  EngineOn --> Fault : internal error
+
+  ' Route assignment affects behavior but is optional
+  note right of EngineOn
+    Route usage is optional.
+    If routeAssigned, Vehicle queries Route
+    per segment during Driving.
+    If routeCleared, continue free driving.
+  end note
+
+  ' -------- Fault handling --------
+  state Fault {
+    [*] --> Diagnosing
+    Diagnosing : do / report diagnostics
+  }
+  Fault --> EngineOff : recover / reset
+}
+
+@enduml

@@ -1,0 +1,130 @@
+@startuml
+!theme mono
+
+skinparam classAttributeIconSize 0
+
+'===============================
+' LAYERS (packages with stereotype)
+'===============================
+package "Presentation Layer" <<layer>> as UI {
+  class DriverUI {
+    +selectVehicle(id)
+    +startEngine()
+    +drive()
+    +stopEngine()
+  }
+}
+
+package "Application Layer" <<layer>> as APP {
+  class VehicleController {
+    +takeControl(driverId, vehicleId)
+    +startVehicle(vehicleId)
+    +driveVehicle(vehicleId)
+    +stopVehicle(vehicleId)
+    +assignRoute(vehicleId, routeId)
+  }
+
+  class RoutingService {
+    +getNextSegment(routeId)
+    +assignRoute(vehicleId, routeId)
+  }
+}
+
+package "Domain Layer" <<layer>> as DMN {
+  package transportation {
+    abstract class Vehicle {
+      # color : String
+      # model : String
+      # isRunning : Boolean
+      # maxSpeed : int
+      + startEngine() : void
+      + stopEngine() : void
+      {abstract} + drive() : void
+    }
+
+    class Car {
+      - numberOfDoors : int
+      + drive() : void
+    }
+
+    class Truck {
+      - cargoCapacity : double
+      + drive() : void
+    }
+
+    class Train {
+      - numberOfCars : int
+      + drive() : void
+    }
+
+    class Engine {
+      - horsepower : int
+      + start() : void
+      + stop() : void
+    }
+
+    class Route {
+      - routeId : String
+      - startLocation : String
+      - endLocation : String
+      - distance : double
+      + getRouteInfo() : void
+    }
+
+    class Driver {
+      - name : String
+      - licenseId : String
+      + takeControl(v: Vehicle) : void
+      + releaseControl() : void
+      + drive(v: Vehicle) : void
+    }
+
+    ' Key domain relationships (minimal)
+    Vehicle "1" *-- "1" Engine : contains
+    Vehicle <|-- Car
+    Vehicle <|-- Truck
+    Vehicle <|-- Train
+  }
+}
+
+package "Infrastructure Layer" <<layer>> as INF {
+  class VehicleRepository {
+    +findById(id) : Vehicle
+    +save(v : Vehicle) : void
+  }
+
+  class RouteRepository {
+    +findById(id) : Route
+    +save(r : Route) : void
+  }
+
+  class TelemetryGateway {
+    +publishStatus(v : Vehicle) : void
+  }
+
+  class MapServiceClient {
+    +fetchRoute(routeId) : Route
+  }
+}
+
+'===============================
+' CROSS-LAYER DEPENDENCIES
+'===============================
+DriverUI --> VehicleController : commands
+VehicleController --> VehicleRepository : load/save
+VehicleController --> RoutingService : assign/fetch
+RoutingService --> RouteRepository : load/save
+RoutingService --> MapServiceClient : external maps
+
+' Application orchestrates Domain entities
+VehicleController --> Vehicle : orchestrates
+VehicleController --> Driver : authorizes
+VehicleController --> Route : assigns
+
+' Use package aliases (no spaces) for layer-level deps
+INF ..> DMN : DTO/ORM mapping
+UI  ..> APP
+APP ..> DMN
+APP ..> INF
+
+@enduml

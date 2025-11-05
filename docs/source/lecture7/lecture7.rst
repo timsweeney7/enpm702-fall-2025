@@ -3,6 +3,10 @@ Lecture 7 - Move Semantics and Smart Pointers
 
 This site accompanies *ENPM702 - Lecture 7: Move Semantics & Smart Pointers*. It organizes the lecture into concise, browsable pages with examples, short exercises, and instructor notes.
 
+.. note::
+   `Lecture 7 slides (v3.0) <https://drive.google.com/file/d/1asdrtcfj3Uyv_oq7InnKbaNOAPAg2e5i/view?usp=sharing>`_.
+
+
 Learning Outcomes
 -----------------
 

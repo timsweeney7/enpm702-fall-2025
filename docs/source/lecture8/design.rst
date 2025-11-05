@@ -71,8 +71,6 @@ By the end of the Design Phase, the following deliverables should be available:
 
 - A complete **class diagram** defining the static structure of the system.
 - **Sequence diagrams** showing how key operations are performed.
-- A **state machine diagram** for major entities like ``Vehicle`` or ``Engine``.
-- A defined **system architecture diagram** showing layered organization and dependencies.
 - Documentation describing design choices, class responsibilities, and patterns applied.
 
 --------------------------

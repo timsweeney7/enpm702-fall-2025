@@ -1,0 +1,71 @@
+@startuml
+'=== Global Style Settings ===
+!theme mono
+skinparam classAttributeIconSize 0
+
+skinparam class {
+  AbstractFontStyle italic
+}
+
+namespace transportation {
+  abstract class Vehicle {
+    # color : String
+    # model : String
+    # isRunning : Boolean
+    # maxSpeed : int
+    # engine : Engine
+    + startEngine() : void
+    + stopEngine() : void
+    {abstract} + drive() : void
+  }
+
+  class Driver {
+    - name : String
+    - licenseId : String
+    - vehicle : Vehicle
+    + takeControl(v: Vehicle) : void
+    + releaseControl() : void
+    + drive() : void
+  }
+
+  class Engine {
+    - horsepower : int
+    + start() : void
+    + stop() : void
+  }
+
+  class Car {
+    - numberOfDoors : int
+    + openTrunk() : void
+    + drive() : void
+  }
+
+  class Route {
+    - routeId : String
+    - startLocation : String
+    - endLocation : String
+    - distance : double
+    + getRouteInfo() : void
+  }
+
+  class Truck {
+    - cargoCapacity : double
+    + lowerTailgate() : void
+    + drive() : void
+  }
+
+  class Train {
+    - numberOfCars : int
+    + blowHorn() : void
+    + drive() : void
+  }
+
+  Vehicle <|-- Car
+  Vehicle <|-- Truck
+  Vehicle <|-- Train
+
+  Vehicle "1" *-- "1" Engine : contains
+  Vehicle "0..*" --> "0..1" Route : follows
+  Driver "0..1" o-- "1" Vehicle : operates
+}
+@enduml

@@ -9,16 +9,17 @@
 
 ## 📘 Lecture 6: Functions (Advanced Topics)
 
-
 👉 [View Lecture 6 Documentation](https://enpm702-fall-2025.readthedocs.io/en/latest/lecture6/lecture6.html)
 
 ## 📘 Lecture 7: Move Semantics and Smart Pointers
 
-
 👉 [View Lecture 7 Documentation](https://enpm702-fall-2025.readthedocs.io/en/latest/lecture7/lecture7.html)
 
-## 📘 Assignment 3
+## 📘 Lecture 8: OOP (Basics)
 
+👉 [View Lecture 8 Documentation](https://enpm702-fall-2025.readthedocs.io/en/latest/lecture8/lecture8.html)
+
+## 📘 Assignment 3
 
 👉 [View Assignment 3 Documentation](https://enpm702-fall-2025.readthedocs.io/en/latest/assignments/rwaIII.html)
 
