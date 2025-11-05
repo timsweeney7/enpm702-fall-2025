@@ -89,3 +89,6 @@ docs/venv/
 __pycache__/
 *.pyc
 
+
+# from Sweeney
+*.zip
