@@ -4,7 +4,7 @@ Requirements Analysis
 
 The **requirements analysis** defines **what** the system must do before designing **how** it will work.
 It captures functional capabilities, quality attributes, constraints, and measurable success criteria
-for the vehicle domain (Driver, Vehicle, Engine, Route).
+for the robotaxi transportation domain (Person, Vehicle, RoboTaxi, RoboShuttle, Fleet, Route, Sensor, Location).
 
 ------------------------
 Functional Requirements
@@ -18,35 +18,35 @@ Functional Requirements
      - **Requirement**
      - **Priority**
    * - FR-1
-     - The system shall allow a Driver to **take control** of a Vehicle and **release control**.
+     - The system shall allow a Person to **request a ride** by specifying pickup and dropoff locations.
      - Must
    * - FR-2
-     - The system shall allow a Driver to **start** and **stop** the Vehicle's engine through the Vehicle interface.
+     - The system shall allow a Fleet to **dispatch an available vehicle** to service a ride request.
      - Must
    * - FR-3
-     - The system shall support **polymorphic driving behavior**: a Vehicle subclass (Car, Truck, Train) must implement ``drive()``.
+     - The system shall support **polymorphic vehicle behavior**: Vehicle subclasses (RoboTaxi, RoboShuttle) must implement type-specific capacity and operations.
      - Must
    * - FR-4
-     - The system shall enforce a **single Engine per Vehicle** and prevent engine operations when the Vehicle is not under control or in an invalid state.
+     - The system shall enforce that each Vehicle contains **one or more Sensors** for navigation and safety monitoring.
      - Must
    * - FR-5
-     - The system shall allow a Vehicle to **follow an optional Route**; if a Route is assigned, the Vehicle shall retrieve route segments during driving.
+     - The system shall allow a Vehicle to **follow an optional Route**; if a Route is assigned, the Vehicle shall navigate along the route waypoints.
      - Must
    * - FR-6
-     - The system shall expose **status queries** (e.g., ``isRunning``, current route presence, vehicle type).
+     - The system shall expose **status queries** (e.g., vehicle status, current location, battery level for RoboTaxi).
      - Should
    * - FR-7
-     - The system shall **log key lifecycle events** (control acquired/released, engine started/stopped, route assigned/cleared).
+     - The system shall **log key lifecycle events** (ride requested, vehicle dispatched, route assigned, passenger boarded/exited, trip completed).
      - Should
    * - FR-8
-     - The system shall **reject invalid commands** (e.g., starting an already running engine, driving without control) and return descriptive errors.
+     - The system shall **read sensor data continuously** during vehicle operation for navigation and obstacle detection.
      - Must
    * - FR-9
-     - The system shall allow **assigning** and **clearing** a Route on a Vehicle at runtime.
+     - The system shall allow **creating and optimizing Routes** with multiple waypoints at runtime.
      - Should
    * - FR-10
-     - The system shall support **type-specific capabilities** (e.g., Car: ``openTrunk()``, Truck: ``lowerTailgate()``, Train: ``blowHorn()``).
-     - Could
+     - The system shall support **Fleet management operations** including adding/removing vehicles and querying available vehicles.
+     - Must
 
 ----------------------------
 Non-Functional Requirements
@@ -59,19 +59,19 @@ Non-Functional Requirements
    * - **Attribute**
      - **Requirement**
    * - Performance
-     - Engine start/stop commands shall complete within **200 ms** (simulated subsystem), and route segment retrieval shall not add more than **50 ms** latency per segment under nominal load.
+     - Sensor data reading shall complete within **50 ms** per sensor, and route optimization shall complete within **500 ms** for routes with up to 20 waypoints.
    * - Reliability
-     - The system shall handle transient failures (e.g., start failure) with retries or clear error reporting; mean time between recoverable faults **> 24 h** for demo workloads.
+     - The system shall handle sensor failures gracefully with redundancy; mean time between failures **> 1000 hours** for autonomous operation.
    * - Safety
-     - The system shall prevent unsafe transitions (e.g., stopping engine while in motion without safe deceleration logic) via validated state checks in the Vehicle.
+     - The system shall prevent unsafe operations (e.g., passenger boarding while vehicle is in motion) via validated state checks in the Vehicle.
    * - Availability
-     - Control and status operations shall be available **99.5%** during test sessions.
+     - Fleet dispatch and vehicle status operations shall be available **99.9%** during operational hours.
    * - Observability
-     - All state transitions and command outcomes shall be emitted as structured events with timestamps and identifiers (vehicle ID, driver ID, route ID).
+     - All ride requests, vehicle dispatches, route assignments, and passenger events shall be logged with timestamps, location data, and entity identifiers.
    * - Maintainability
-     - The system shall separate concerns by layers (Presentation, Application, Domain, Infrastructure) and achieve **< 10%** cyclic dependency density in static analysis.
+     - The system shall separate concerns by layers and achieve **< 10%** cyclic dependency density in static analysis.
    * - Extensibility
-     - Adding a new Vehicle subtype shall require **no changes** to existing Vehicle consumers beyond configuration or registration.
+     - Adding a new Vehicle subtype (e.g., RoboBus) shall require **no changes** to existing Fleet or Route management logic.
 
 ----------------------
 Technical Constraints
@@ -84,17 +84,19 @@ Technical Constraints
    * - **Constraint**
      - **Description**
    * - Namespace Organization
-     - All domain classes (Vehicle, Car, Truck, Train, Engine, Driver, Route) shall be encapsulated within the ``transportation`` namespace to provide logical grouping and prevent naming conflicts.
+     - All domain classes (Vehicle, RoboTaxi, RoboShuttle, Sensor, Fleet, Person, Route, Location) shall be encapsulated within the ``transportation`` namespace to provide logical grouping and prevent naming conflicts.
    * - Encapsulation
-     - Drivers shall not call Engine directly. All powertrain operations pass through the Vehicle API.
+     - External actors shall not access Sensors directly. All sensor operations are managed internally by Vehicle.
    * - Composition Rule
-     - Exactly one Engine per Vehicle (composition). Engine lifecycle is bound to Vehicle lifecycle.
+     - Each Vehicle contains one or more Sensors (composition). Sensor lifecycle is bound to Vehicle lifecycle.
+   * - Aggregation Rule
+     - Fleet aggregates Vehicles. Vehicles can exist independently of the Fleet and can be transferred between Fleets.
    * - Optional Route
-     - Route association is optional at runtime. Driving shall function without a Route assigned.
+     - Route association is optional at runtime. Vehicles can operate without a Route assigned (e.g., idle, charging).
    * - Type Abstraction
-     - Diagram types are language agnostic (e.g., ``String``), and mapping to concrete types (e.g., ``std::string``) is an implementation detail.
+     - Diagram types are language agnostic (e.g., ``String``, ``Integer``), and mapping to concrete types (e.g., ``std::string``, ``int``) is an implementation detail.
    * - Error Handling
-     - Commands must return typed results or exceptions with machine-readable codes and human-readable messages.
+     - Operations must return typed results or exceptions with machine-readable codes and human-readable messages.
 
 ------------------------
 Implementation Guidance
@@ -106,9 +108,10 @@ All domain entities in the C++ implementation shall adhere to the following conv
 
 - All domain classes shall be declared within the ``transportation`` namespace
 - Header files shall use ``#pragma once`` or include guards with the pattern ``TRANSPORTATION_CLASSNAME_HPP``
-- Member variables shall use trailing underscore convention (e.g., ``color_``, ``model_``, ``is_running_``)
+- Member variables shall use camelCase convention (e.g., ``vehicleId``, ``batteryLevel``, ``maxPassengers``)
 - Pass ``std::string`` parameters as ``const std::string&`` in constructors and methods to avoid unnecessary copies
-- Use member initializer lists for all constructor initialization to ensure direct initialization and proper const/reference member handling
+- Use ``std::shared_ptr`` for aggregation relationships (Fleet–Vehicle) and association relationships (Vehicle–Route, Person–Vehicle)
+- Use composition for Sensor ownership (Vehicle directly contains Sensors)
 - Abstract methods shall be marked with ``= 0`` pure virtual specifier
 - Class and method documentation shall follow Doxygen format with ``@file``, ``@class``, ``@brief``, ``@param``, and ``@return`` tags
 - Virtual destructors shall be provided for all polymorphic base classes
@@ -120,30 +123,50 @@ All domain entities in the C++ implementation shall adhere to the following conv
    namespace transportation {
        // Core domain entities
        class Vehicle;      // Abstract base class
-       class Car;          // Concrete vehicle type
-       class Truck;        // Concrete vehicle type
-       class Train;        // Concrete vehicle type
-       class Engine;       // Powertrain component
-       class Driver;       // Control actor
-       class Route;        // Navigation entity
+       class RoboTaxi;     // Autonomous taxi vehicle
+       class RoboShuttle;  // Autonomous shuttle vehicle
+       class Sensor;       // Navigation and safety sensor
+       class Fleet;        // Vehicle fleet management
+       class Person;       // Passenger/user
+       class Route;        // Navigation route
+       class Location;     // Geographic location
+       
+       // Enumerations
+       enum class SensorType;
+       enum class VehicleStatus;
    }
 
 **Example Usage:**
 
 .. code-block:: cpp
 
-   #include "vehicle.hpp"
-   #include "car.hpp"
+   #include "fleet.hpp"
+   #include "robotaxi.hpp"
+   #include "person.hpp"
+   #include "route.hpp"
+   #include "location.hpp"
    
    int main() {
-       transportation::Car my_car("Red", "Sedan", 180);
-       transportation::Driver driver("John Doe", "DL12345");
+       // Create fleet and vehicles
+       transportation::Fleet fleet("Fleet-001", "RoboRide Inc");
+       auto taxi = std::make_shared<transportation::RoboTaxi>(
+           "TAXI-001", 85.5f, 4);
        
-       driver.takeControl(my_car);
-       my_car.startEngine();
-       my_car.drive();
-       my_car.stopEngine();
-       driver.releaseControl();
+       fleet.addVehicle(taxi);
+       
+       // Create passenger and locations
+       transportation::Person passenger("P-001", "Jane Doe", "555-1234");
+       transportation::Location pickup(37.7749, -122.4194);  // San Francisco
+       transportation::Location dropoff(37.8044, -122.2712); // Oakland
+       
+       // Request ride
+       auto dispatchedVehicle = fleet.dispatchVehicle(pickup, dropoff);
+       
+       // Passenger boards vehicle
+       passenger.boardVehicle(dispatchedVehicle);
+       
+       // Complete trip
+       passenger.exitVehicle();
        
        return 0;
    }
@@ -158,18 +181,22 @@ Success Criteria
 
    * - **Criterion**
      - **Measurable Outcome**
-   * - Engine Lifecycle Control
-     - Issuing ``startEngine()`` from a controlled state sets ``isRunning = true`` within **200 ms** and logs the event; ``stopEngine()`` resets the flag and logs within **200 ms**.
-   * - Polymorphic Drive
-     - For Car, Truck, Train, invoking ``drive()`` produces type-specific behavior without code changes in callers; verified by unit tests covering all subtypes (**> 95%** branch coverage on drive logic).
-   * - Route Optionality
-     - Vehicle drives successfully with and without a Route; when a Route is assigned, at least **90%** of segments are retrieved within **50 ms** each under nominal load.
-   * - Safety Guards
-     - Invalid commands (e.g., start when already running) are rejected with explicit error codes in **100%** of negative test cases.
+   * - Ride Request and Dispatch
+     - Person requests ride with pickup/dropoff locations; Fleet dispatches available vehicle within **500 ms** and logs the event with timestamps and location data.
+   * - Polymorphic Vehicle Behavior
+     - For RoboTaxi and RoboShuttle, invoking type-specific methods produces correct behavior without code changes in Fleet management; verified by unit tests covering all subtypes (**> 95%** branch coverage).
+   * - Sensor Data Collection
+     - Vehicles continuously read sensor data with **< 50 ms** latency per sensor; sensor failures are detected and logged within **100 ms**.
+   * - Route Navigation
+     - Vehicle navigates successfully with and without a Route; when a Route is assigned, route optimization completes within **500 ms** for routes with up to 20 waypoints.
+   * - Fleet Management
+     - Fleet operations (add/remove vehicle, query available vehicles) complete within **100 ms**; fleet maintains accurate vehicle inventory in **100%** of test cases.
+   * - Passenger Safety
+     - Invalid operations (e.g., boarding while vehicle is moving) are rejected with explicit error codes in **100%** of negative test cases.
    * - Separation of Concerns
      - Static analysis reports **0** direct dependencies from Presentation to Domain or Infrastructure; only Application mediates.
    * - Observability
-     - Logs contain complete audit trails (control, engine, routing) with **no missing events** in end-to-end tests across **N ≥ 50** scripted scenarios.
+     - Logs contain complete audit trails (ride requests, dispatches, passenger events, route navigation) with **no missing events** in end-to-end tests across **N ≥ 50** scripted scenarios.
    * - Namespace Compliance
      - All domain classes reside within ``transportation`` namespace; static analysis confirms zero global namespace pollution from domain entities.
 
@@ -177,22 +204,25 @@ Success Criteria
 Assumptions and Scope
 -------------------------
 
-- A single Vehicle has exactly one Engine.  
-- A Driver may or may not be in control at any given time.  
-- A Vehicle may follow **zero or one** current Route; Routes may be reused across vehicles over time.  
-- Real hardware effects are simulated; timings refer to software execution in the target environment.
+- A Vehicle contains one or more Sensors for navigation and safety.
+- A Fleet may contain zero or more Vehicles; vehicles can be added or removed dynamically.
+- A Person may ride in zero or one Vehicle at any given time.
+- A Vehicle may follow **zero or one** current Route; Routes may be shared or reused across vehicles.
+- Sensor readings are simulated; timings refer to software execution in the target environment.
 - All domain entities are organized within the ``transportation`` namespace in the C++ implementation.
 - Language-agnostic design allows implementation in multiple programming languages while maintaining conceptual integrity.
+- The system focuses on core ride-hailing functionality; payment processing and user authentication are out of scope.
 
 -----------------------
 Verification Approach
 -----------------------
 
-- **Unit tests** for Vehicle state guards, Engine delegation, and subtype-specific ``drive()`` behavior within the ``transportation`` namespace.  
-- **Integration tests** for Driver–Vehicle interactions and Route assignment and traversal across namespace boundaries.  
-- **Contract tests** for repository and gateway adapters (Infrastructure) to ensure stable interfaces with domain entities.  
+- **Unit tests** for Vehicle state management, Sensor data reading, Fleet operations, and subtype-specific behavior within the ``transportation`` namespace.
+- **Integration tests** for Person–Fleet–Vehicle interactions, route navigation, and passenger boarding/exiting across namespace boundaries.
+- **Contract tests** for repository and gateway adapters (Infrastructure) to ensure stable interfaces with domain entities.
 - **Static analysis** for dependency direction, absence of forbidden couplings, proper namespace usage, and cyclic dependency metrics.
 - **Namespace verification** to ensure all domain classes are properly encapsulated within ``transportation`` and no global namespace pollution occurs.
-- **Performance tests** to validate engine operations complete within 200 ms and route segment retrieval within 50 ms under nominal load.
-- **Safety tests** to verify invalid state transitions are properly rejected with appropriate error codes in 100% of negative test cases.
-- **Code coverage analysis** ensuring > 95% branch coverage on polymorphic drive logic across all vehicle subtypes.
+- **Performance tests** to validate sensor reading completes within 50 ms per sensor and route optimization within 500 ms under nominal load.
+- **Safety tests** to verify invalid state transitions (e.g., boarding while moving) are properly rejected with appropriate error codes in 100% of negative test cases.
+- **Code coverage analysis** ensuring > 95% branch coverage on polymorphic vehicle behavior across RoboTaxi and RoboShuttle subtypes.
+- **Reliability tests** for sensor failure handling and graceful degradation under fault conditions.

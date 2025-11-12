@@ -51,10 +51,10 @@ Class Diagram
       :width: 100%
       :class: only-dark
 
-This class diagram represents a simplified **vehicle control system**, showing how various entities
+This class diagram represents a **robotaxi transportation system**, showing how various entities
 interact and relate to each other through inheritance, composition, aggregation, and association.
-It models the structural organization of the system and the ownership or interaction patterns
-between its classes.
+It models the structural organization of an autonomous ride-hailing service and the ownership or
+interaction patterns between its classes.
 
 .. note::
 
@@ -68,98 +68,131 @@ Key Components
 **Vehicle (Abstract Class)**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- **Purpose:** Defines the general structure and behavior common to all vehicle types.
+- **Purpose:** Defines the general structure and behavior common to all autonomous vehicle types.
 - **Namespace:** ``transportation``
 - **Attributes:**
 
-  - ``color : String`` – The exterior color of the vehicle for identification purposes
-  - ``model : String`` – The model name or designation of the vehicle (e.g., "Sedan", "SUV")
-  - ``isRunning : Boolean`` – Indicates whether the vehicle's engine is currently running
-  - ``maxSpeed : int`` – The maximum speed the vehicle can achieve (in km/h or mph)
-  - ``engine : Engine`` – The vehicle's powertrain component (composition relationship)
+  - ``id : String`` – Unique vehicle identifier for tracking and fleet management
+  - ``currentLocation : Location`` – Current geographic position of the vehicle
+  - ``status : VehicleStatus`` – Current operational state (IDLE, IN_SERVICE, EN_ROUTE, CHARGING, MAINTENANCE, OUT_OF_SERVICE)
+  - ``route : Route`` – Optional navigation route the vehicle is currently following
+  - ``sensors : List<Sensor>`` – Collection of sensors for navigation and safety (composition)
 
 - **Operations:**
 
-  - ``startEngine()`` — Starts the vehicle's engine if not already running; returns error if already running
-  - ``stopEngine()`` — Stops the engine safely; validates vehicle is in a safe state
-  - ``{abstract} drive()`` — Must be implemented by subclasses to define type-specific driving behavior
+  - ``{abstract} getCapacity() : Integer`` — Returns maximum passenger capacity; must be implemented by subclasses
+  - ``updateLocation(location : Location) : void`` — Updates the vehicle's current geographic position
+  - ``getStatus() : VehicleStatus`` — Returns the current operational status of the vehicle
+  - ``setRoute(route : Route) : void`` — Assigns a navigation route to the vehicle
+  - ``getRoute() : Route`` — Retrieves the currently assigned route
 
 .. note::
     The ``Vehicle`` class is abstract, meaning it cannot be instantiated directly.
-    It provides a consistent interface for all concrete vehicles and enforces safety guards
-    such as rejecting invalid state transitions (e.g., starting an already running engine).
+    It provides a consistent interface for all concrete autonomous vehicles and manages
+    sensor integration for navigation and safety monitoring.
 
 **Concrete Vehicle Types**
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 All concrete vehicle types reside in the ``transportation`` namespace and inherit from ``Vehicle``.
 
-1. **Car**
+1. **RoboTaxi**
 
-   - **Additional Attributes:** ``numberOfDoors : int`` – Number of passenger doors
+   - **Additional Attributes:** 
+     
+     - ``batteryLevel : Float`` – Current battery charge level (0.0 to 100.0)
+     - ``maxPassengers : Integer`` – Maximum number of passengers the taxi can accommodate
+   
    - **Operations:**
      
-     - ``openTrunk()`` – Opens the trunk compartment
-     - ``drive()`` – Implements car-specific driving behavior
+     - ``getCapacity() : Integer`` – Returns the maximum passenger capacity
+     - ``chargeBattery() : void`` – Initiates battery charging operation
+     - ``completeTrip() : void`` – Finalizes the current ride and updates vehicle status
 
-2. **Truck**
+2. **RoboShuttle**
 
-   - **Additional Attributes:** ``cargoCapacity : double`` – Maximum cargo weight capacity (in kg or tons)
+   - **Additional Attributes:** 
+     
+     - ``maxPassengers : Integer`` – Maximum passenger capacity for shuttle service
+   
    - **Operations:**
      
-     - ``lowerTailgate()`` – Lowers the rear tailgate for loading
-     - ``drive()`` – Implements truck-specific driving behavior with cargo considerations
+     - ``getCapacity() : Integer`` – Returns the maximum passenger capacity
+     - ``addStop(stop : Location) : void`` – Adds a stop location to the shuttle's route
 
-3. **Train**
+Each subclass specializes the ``Vehicle`` class by providing type-specific attributes
+and operations tailored to their service model (on-demand taxi vs. scheduled shuttle).
 
-   - **Additional Attributes:** ``numberOfCars : int`` – Number of connected railway cars
-   - **Operations:**
-     
-     - ``blowHorn()`` – Activates the train horn
-     - ``drive()`` – Implements train-specific driving behavior along tracks
-
-Each subclass specializes the ``Vehicle`` class by providing concrete driving behavior and
-type-specific attributes and operations.
-
-**Engine**
+**Sensor**
 ^^^^^^^^^^
 
 - **Namespace:** ``transportation``
-- **Attributes:** ``horsepower : int`` – Engine power rating
+- **Attributes:** 
+  
+  - ``sensorId : String`` – Unique sensor identifier
+  - ``sensorType : SensorType`` – Type of sensor (LIDAR, CAMERA, RADAR, GPS, IMU)
+  - ``locationOnVehicle : Location`` – Physical mounting position on the vehicle
+
 - **Operations:** 
   
-  - ``start()`` – Initiates engine operation (completes within 200 ms)
-  - ``stop()`` – Shuts down engine operation (completes within 200 ms)
+  - ``readData() : SensorData`` – Reads current sensor data (completes within 50 ms)
+  - ``calibrate() : void`` – Performs sensor calibration procedure
+  - ``getType() : SensorType`` – Returns the type of sensor
 
 - **Relationship:** Composition (``*--``) with ``Vehicle``.
-  A vehicle contains exactly one engine; if the vehicle is destroyed,
-  the engine is destroyed as well. This enforces the constraint that each
-  vehicle has a single, bound powertrain.
-- **Purpose:** Represents the mechanical subsystem responsible for power and motion.
+  A vehicle contains one or more sensors; if the vehicle is destroyed,
+  the sensors are destroyed as well. This enforces that vehicles have
+  integrated sensor systems for navigation and safety.
+- **Purpose:** Represents sensor hardware for autonomous navigation, obstacle detection,
+  and situational awareness.
 
 .. important::
-   **Encapsulation Rule:** Drivers and other external actors cannot interact directly with
-   the Engine. All powertrain operations must pass through the Vehicle API, which manages
-   engine state and enforces safety constraints.
+   **Encapsulation Rule:** External actors cannot interact directly with
+   Sensors. All sensor operations are managed internally by the Vehicle, which
+   processes sensor data for navigation decisions.
 
-**Driver**
+**Fleet**
+^^^^^^^^^
+
+- **Namespace:** ``transportation``
+- **Attributes:**
+
+  - ``id : String`` – Unique fleet identifier
+  - ``operatorName : String`` – Name of the fleet operating company
+  - ``serviceArea : List<Location>`` – Geographic regions where fleet operates
+  - ``vehicles : List<Vehicle>`` – Collection of vehicles managed by the fleet
+
+- **Operations:**
+
+  - ``addVehicle(vehicle : Vehicle) : void`` — Adds a vehicle to the fleet inventory
+  - ``removeVehicle(vehicle : Vehicle) : void`` — Removes a vehicle from the fleet
+  - ``getAvailableVehicles() : List<Vehicle>`` — Returns all idle vehicles ready for dispatch
+  - ``dispatchVehicle(pickup : Location, dropoff : Location) : Vehicle`` — Assigns an available vehicle to service a ride request
+
+- **Relationship:** Aggregation (``o--``) with ``Vehicle``.
+  The fleet manages vehicles but does not own them; vehicles exist independently
+  and can be transferred between fleets or operate independently.
+
+**Person**
 ^^^^^^^^^^
 
 - **Namespace:** ``transportation``
 - **Attributes:**
 
-  - ``name : String`` – Driver's name
-  - ``licenseId : String`` – Unique driver license identifier
+  - ``id : String`` – Unique person identifier
+  - ``name : String`` – Person's name
+  - ``phoneNumber : String`` – Contact phone number
+  - ``currentVehicle : Vehicle`` – The vehicle the person is currently riding in (if any)
 
 - **Operations:**
 
-  - ``takeControl(v: Vehicle)`` — Takes control of a vehicle; must succeed before issuing commands
-  - ``releaseControl()`` — Releases control of the current vehicle
-  - ``drive(v: Vehicle)`` — Commands a vehicle to drive; vehicle must be under control
+  - ``requestRide(pickup : Location, dropoff : Location) : void`` — Requests a ride from the fleet system
+  - ``boardVehicle(vehicle : Vehicle) : void`` — Boards an assigned vehicle
+  - ``exitVehicle() : void`` — Exits the current vehicle
 
-- **Relationship:** Aggregation (``o--``) with ``Vehicle``.
-  The driver operates a vehicle but does not own it; both exist independently.
-  A driver may or may not be in control of a vehicle at any given time.
+- **Relationship:** Association (``-->``) with ``Vehicle``.
+  A person may ride in a vehicle, but both exist independently. The person may or may
+  not be in a vehicle at any given time.
 
 **Route**
 ^^^^^^^^^
@@ -167,130 +200,64 @@ type-specific attributes and operations.
 - **Namespace:** ``transportation``
 - **Attributes:**
 
-  - ``routeId : String`` – Unique route identifier
-  - ``startLocation : String`` – Starting point of the route
-  - ``endLocation : String`` – Destination point of the route
-  - ``distance : double`` – Total route distance (in km or miles)
+  - ``id : String`` – Unique route identifier
+  - ``waypoints : List<Location>`` – Ordered list of geographic points defining the route path
 
-- **Operations:** ``getRouteInfo()`` – Retrieves route segment information (< 50 ms per segment)
+- **Operations:** 
+  
+  - ``addWaypoint(location : Location) : void`` – Adds a waypoint to the route
+  - ``optimizeRoute() : void`` – Optimizes waypoint order for efficiency (< 500 ms for 20 waypoints)
+  - ``getDistance() : Double`` – Calculates total route distance
+
 - **Relationship:** Association (``-->``) with ``Vehicle``.
-  A vehicle may follow zero or one route, while a route may be associated with multiple vehicles.
-  Route association is optional; vehicles can operate without an assigned route.
+  A vehicle may follow zero or one route, while a route may be followed by multiple vehicles.
+  Route association is optional; vehicles can operate without an assigned route (e.g., idle, charging).
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Relationship Summary
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Location**
+^^^^^^^^^^^^
 
-.. list-table::
-   :widths: 20 45 35
-   :header-rows: 1
+- **Namespace:** ``transportation``
+- **Attributes:**
 
-   * - **Relationship**
-     - **Description**
-     - **Example**
-   * - **Inheritance (Generalization)**
-     - Indicates an "is-a" hierarchy where subclasses extend a base class.
-     - .. only:: html
+  - ``latitude : Double`` – Geographic latitude coordinate
+  - ``longitude : Double`` – Geographic longitude coordinate
 
-          .. figure:: /_static/lecture8/design/inheritance-light.png
-             :alt: Inheritance (light)
-             :width: 200
-             :align: center
-             :class: only-light
+- **Operations:** 
+  
+  - ``distanceTo(other : Location) : Double`` – Calculates distance to another location
 
-          .. figure:: /_static/lecture8/design/inheritance-dark.png
-             :alt: Inheritance (dark)
-             :width: 200
-             :align: center
-             :class: only-dark
-   * - **Composition**
-     - Strong ownership; the part cannot exist independently of the whole.
-     - .. only:: html
+- **Relationship:** Used by Route (waypoints), Vehicle (currentLocation), Sensor (locationOnVehicle), and Fleet (serviceArea).
+- **Purpose:** Represents geographic coordinates for navigation, service boundaries, and sensor positioning.
 
-          .. figure:: /_static/lecture8/design/composition-light.png
-             :alt: Composition (light)
-             :width: 200
-             :align: center
-             :class: only-light
 
-          .. figure:: /_static/lecture8/design/composition-dark.png
-             :alt: Composition (dark)
-             :width: 200
-             :align: center
-             :class: only-dark
-   * - **Aggregation**
-     - Weak ownership; objects can exist independently of one another.
-     - .. only:: html
-
-          .. figure:: /_static/lecture8/design/aggregation-light.png
-             :alt: Aggregation (light)
-             :width: 200
-             :align: center
-             :class: only-light
-
-          .. figure:: /_static/lecture8/design/aggregation-dark.png
-             :alt: Aggregation (dark)
-             :width: 200
-             :align: center
-             :class: only-dark
-   * - **Association**
-     - Simple connection indicating interaction between two objects.
-     - .. only:: html
-
-          .. figure:: /_static/lecture8/design/association-light.png
-             :alt: Association (light)
-             :width: 200
-             :align: center
-             :class: only-light
-
-          .. figure:: /_static/lecture8/design/association-dark.png
-             :alt: Association (dark)
-             :width: 200
-             :align: center
-             :class: only-dark
-   * - **Dependency**
-     - A temporary or usage-based relationship.
-     - .. only:: html
-
-          .. figure:: /_static/lecture8/design/dependency-light.png
-             :alt: Dependency (light)
-             :width: 200
-             :align: center
-             :class: only-light
-
-          .. figure:: /_static/lecture8/design/dependency-dark.png
-             :alt: Dependency (dark)
-             :width: 200
-             :align: center
-             :class: only-dark
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Conceptual Analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - **Encapsulation of Behavior:**  
-  The ``Vehicle`` encapsulates engine control internally. The ``Driver`` only interacts with the
-  ``Vehicle`` interface, never with the ``Engine`` directly. This promotes abstraction and separation
-  of concerns, and enforces the technical constraint that drivers cannot call Engine directly.
+  The ``Vehicle`` encapsulates sensor management internally. External actors (Person, Fleet) only
+  interact with the ``Vehicle`` interface, never with ``Sensors`` directly. This promotes abstraction
+  and separation of concerns, and enforces the technical constraint that sensors cannot be accessed directly.
 
 - **Polymorphism:**  
-  Concrete vehicles override the abstract ``drive()`` method, enabling dynamic behavior depending
-  on the vehicle type at runtime. This satisfies the requirement for polymorphic driving behavior
-  across Car, Truck, and Train subtypes.
+  Concrete vehicles (RoboTaxi, RoboShuttle) provide type-specific implementations of ``getCapacity()``
+  and specialized operations, enabling dynamic behavior depending on the vehicle type at runtime.
 
 - **Optional Relationships:**  
-  The ``Route`` association is optional; a vehicle can operate without being assigned a route.
-  Similarly, a ``Driver`` may or may not be controlling a vehicle at a given time.
+  The ``Route`` association is optional; a vehicle can operate without being assigned a route
+  (e.g., idle, charging). Similarly, a ``Person`` may or may not be riding in a vehicle at a given time.
 
 - **Ownership Hierarchy:**  
 
-  - ``Vehicle`` **owns** ``Engine`` — composition (single engine per vehicle).  
-  - ``Driver`` **operates** ``Vehicle`` — aggregation (independent lifecycles).  
+  - ``Vehicle`` **owns** ``Sensors`` — composition (sensors are integral parts of the vehicle).  
+  - ``Fleet`` **manages** ``Vehicles`` — aggregation (vehicles can exist independently of fleet).  
   - ``Vehicle`` **follows** ``Route`` — association (optional relationship).
+  - ``Person`` **rides in** ``Vehicle`` — association (temporary relationship).
 
-- **Safety and Error Handling:**
-  The ``Vehicle`` enforces safety guards by rejecting invalid commands (e.g., starting an already
-  running engine, driving without driver control) and returning descriptive error codes and messages.
+- **Fleet Management:**
+  The ``Fleet`` provides centralized management of vehicles, including dispatch logic, availability
+  tracking, and service area management. This separates vehicle lifecycle from ride operations.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 Performance Requirements
@@ -300,10 +267,11 @@ Performance Requirements
 
    **Performance Constraints:**
    
-   - Engine ``start()`` and ``stop()`` operations complete within **200 ms**
-   - Route ``getRouteInfo()`` retrieval completes within **50 ms per segment**
-   - Control operations maintain **99.5% availability** during test sessions
-   - All state transitions are logged with timestamps and entity identifiers
+   - Sensor ``readData()`` operations complete within **50 ms per sensor**
+   - Route ``optimizeRoute()`` completes within **500 ms for routes with up to 20 waypoints**
+   - Fleet dispatch operations complete within **100 ms**
+   - Fleet maintains **99.9% availability** during operational hours
+   - All ride events (requests, dispatches, passenger boarding/exiting) are logged with timestamps and location data
 
 ~~~~~~~~~~~~~~~~
 Summary
@@ -312,15 +280,16 @@ Summary
 This class diagram demonstrates several key object-oriented principles:
 
 - **Abstraction** through the abstract ``Vehicle`` class.  
-- **Inheritance** and **polymorphism** in specialized vehicle types.  
+- **Inheritance** and **polymorphism** in specialized vehicle types (RoboTaxi, RoboShuttle).  
 - **Encapsulation** of functionality within cohesive classes.  
-- **Composition** and **aggregation** to model strong and weak ownership.  
-- **Clear separation of concerns** between control (Driver), behavior (Vehicle),
-  and resources (Engine, Route).
-- **Safety constraints** enforced through validated state transitions and error handling.
+- **Composition** for sensors that are integral parts of vehicles.
+- **Aggregation** for fleet management where vehicles maintain independent lifecycles.
+- **Association** for optional relationships (routes, passengers).
+- **Clear separation of concerns** between passengers (Person), fleet management (Fleet),
+  vehicle operations (Vehicle), navigation (Route), and sensing (Sensor).
 
 Overall, the design offers modularity, flexibility for extension, and
-a realistic mapping between software classes and physical entities, while satisfying
+a realistic mapping between software classes and autonomous transportation entities, while satisfying
 both functional and non-functional requirements.
 
 Sequence Diagram
@@ -335,13 +304,13 @@ flows through the system to accomplish a specific task.
    .. figure:: /_static/lecture8/design/sequence_diagram_light.png
       :alt: Sequence Diagram
       :align: center
-      :width: 70%
+      :width: 100%
       :class: only-light
 
    .. figure:: /_static/lecture8/design/sequence_diagram_dark.png
       :alt: Sequence Diagram
       :align: center
-      :width: 70%
+      :width: 100%
       :class: only-dark
 
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -350,55 +319,65 @@ Participants
 
 All participants belong to the ``transportation`` namespace in the implementation:
 
-- **Driver** – External actor initiating commands; must take control before issuing operations.  
-- **Vehicle** – Responds to driver requests, manages internal state, and controls the engine.  
-- **Engine** – Performs physical start/stop operations (200 ms completion target).  
-- **Route** – (Optional) Provides path information for navigation (50 ms per segment retrieval).
+- **Person** – Passenger requesting and using ride services; initiates ride requests.
+- **Fleet** – Manages vehicle inventory and dispatches vehicles to service ride requests.
+- **RoboTaxi** (Vehicle) – Autonomous vehicle that navigates routes and transports passengers.
+- **Route** – Provides navigation path with waypoints for vehicle to follow.
+- **Sensor** – Continuously provides data for navigation and obstacle detection (50 ms per read).
+- **Location** – Represents geographic coordinates for pickup, dropoff, and navigation waypoints.
 
 ~~~~~~~~~~~~~~~~~~~~~~
 Message Flow
 ~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Driver takes control** of the vehicle (``takeControl(v)``).  
-   - Vehicle validates the request and grants control.
-   - Without control, subsequent commands will be rejected.
+1. **Person requests a ride** from the Fleet (``dispatchVehicle(pickup, dropoff)``).  
+   - Fleet queries available vehicles.
+   - Fleet selects an idle RoboTaxi for the ride.
 
-2. **Driver requests** the vehicle to start the engine (``startEngine()``).  
-   - Vehicle checks ``isRunning`` state.  
-   - If not running, Vehicle delegates ``start()`` to the Engine (completes within 200 ms).  
-   - If already running, it returns an error status with descriptive message.
-   - State transition is logged with timestamp and vehicle identifier.
+2. **Fleet creates and assigns a route**.  
+   - Fleet creates a new Route with a unique ID.
+   - Fleet adds pickup and dropoff locations as waypoints.
+   - Fleet optimizes the route (completes within 500 ms for 20 waypoints).
+   - Fleet assigns the route to the selected RoboTaxi via ``setRoute(route)``.
 
-3. **Driver initiates driving** (``drive()``).  
-   - Vehicle validates that it is under control and engine is running.
-   - Vehicle may optionally follow a ``Route`` if one is assigned.  
-   - During driving, Vehicle adjusts engine power per segment (Route retrieval < 50 ms per segment).
-   - Polymorphic ``drive()`` behavior executes based on vehicle subtype (Car, Truck, or Train).
+3. **RoboTaxi navigates to pickup location**.  
+   - Vehicle continuously reads sensor data (``readData()`` completes within 50 ms per sensor).
+   - Vehicle updates its current location based on sensor input.
+   - Vehicle calculates distance to pickup location using ``Location.distanceTo()``.
+   - Loop continues until vehicle arrives at pickup.
 
-4. **Driver stops and releases control**.  
-   - Vehicle stops the engine (``stopEngine()`` → ``Engine.stop()``).
-   - Engine stop completes within 200 ms.
-   - State transition is logged.
-   - Control returns to the driver via ``releaseControl()``.
+4. **Passenger boards the vehicle**.  
+   - Person calls ``boardVehicle(taxi)`` when vehicle arrives.
+   - Vehicle status updates to IN_SERVICE.
+
+5. **RoboTaxi navigates to dropoff location**.  
+   - Vehicle continues reading sensor data and updating location.
+   - Vehicle follows the assigned route to the destination.
+   - Vehicle queries route distance to monitor progress.
+
+6. **Passenger exits and trip completes**.  
+   - Person calls ``exitVehicle()`` upon arrival at destination.
+   - RoboTaxi calls ``completeTrip()`` to finalize the ride and update status to IDLE.
 
 ~~~~~~~~~~~~~~~~~~~~~~
 Control Constructs
 ~~~~~~~~~~~~~~~~~~~~~~
 
-- **alt [isRunning == false / true]**: Vehicle decides whether to start or skip engine startup based on current state.  
-- **opt [route assigned]**: Route interaction occurs only when a route exists (optional relationship).  
-- **loop [for each segment]**: Vehicle iterates over route segments during driving.  
+- **loop [while en route to pickup]**: Vehicle continuously reads sensor data and updates location until it reaches the pickup point.
+- **loop [while en route to dropoff]**: Vehicle navigates to the destination, reading sensors and monitoring route progress.
+- **object creation**: Route and Location objects are created dynamically during the ride request process.  
 
 ~~~~~~~~~~~~~~~~~~~~~~
 Error Handling
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The sequence diagram demonstrates error handling for invalid state transitions:
+The sequence diagram demonstrates error handling for invalid operations:
 
-- Attempting to start an already running engine returns an error message
-- Commands issued without driver control are rejected
+- Attempting to board a vehicle while it is in motion is rejected
+- Ride requests when no vehicles are available return appropriate error messages
+- Sensor failures are detected and logged for safety monitoring
 - All errors include machine-readable codes and human-readable descriptions
-- State validation occurs before executing operations
+- State validation occurs before executing passenger operations
 
 ~~~~~~~~~~~~~~~~~~~~~~
 Observability
@@ -406,10 +385,12 @@ Observability
 
 All key lifecycle events are logged with structured information:
 
-- Control acquired/released (driver ID, vehicle ID, timestamp)
-- Engine started/stopped (vehicle ID, timestamp, operation duration)
-- Route assigned/cleared (vehicle ID, route ID, timestamp)
-- Command outcomes (success/failure, error codes if applicable)
+- Ride requests (person ID, pickup/dropoff locations, timestamp)
+- Vehicle dispatches (fleet ID, vehicle ID, route ID, timestamp)
+- Route creation and optimization (route ID, waypoint count, optimization time)
+- Passenger boarding/exiting (person ID, vehicle ID, location, timestamp)
+- Sensor readings (vehicle ID, sensor type, timestamp, data quality metrics)
+- Trip completion (vehicle ID, route ID, total distance, duration)
 
 ~~~~~~~~~~~~~~~~~~~~~~
 Summary
@@ -418,11 +399,13 @@ Summary
 The sequence diagram complements the class diagram by showing the **runtime collaboration**
 of objects. It clarifies the responsibilities of each component:
 
-- The **Driver** only issues commands and must establish control first.  
-- The **Vehicle** owns the operational logic, enforces safety guards, and delegates engine control internally.  
-- The **Engine** executes low-level start/stop actions within performance constraints.  
-- The **Route** is consulted optionally to support navigation.
+- The **Person** initiates ride requests and interacts with vehicles for boarding/exiting.
+- The **Fleet** manages vehicle dispatch, route creation, and optimization.
+- The **RoboTaxi** (Vehicle) executes autonomous navigation using sensor data and follows assigned routes.
+- The **Sensor** provides continuous data for navigation and safety (within performance constraints).
+- The **Route** defines the navigation path through waypoints.
+- The **Location** represents geographic coordinates for all spatial operations.
 
-Together, the class, sequence, and state machine diagrams provide a complete behavioral
-and structural model of the vehicle system that satisfies both functional requirements
+Together, the class and sequence diagrams provide a complete behavioral
+and structural model of the robotaxi system that satisfies both functional requirements
 (FR-1 through FR-10) and non-functional requirements (performance, safety, observability).

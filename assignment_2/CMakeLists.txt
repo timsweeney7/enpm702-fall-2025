@@ -28,6 +28,13 @@ if(VALGRIND_EXECUTABLE)
         COMMENT "Running Valgrind Memcheck on assignment_2_cpp"
     )
 
+    # add_custom_command(
+    #     TARGET memcheck
+    #     COMMAND ${VALGRIND_EXECUTABLE} --leak-check=full --track-origins=yes $<TARGET_FILE:week3_exercise>
+    #     COMMENT "Running Valgrind Memcheck on week3_exercise"
+    # )
+
+
     # Ensure executables are built before any tool runs
     # add_dependencies(memcheck week3_cpp week3_exercise)
     add_dependencies(memcheck assignment_2_cpp)

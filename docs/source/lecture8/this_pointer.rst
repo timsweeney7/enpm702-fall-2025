@@ -257,8 +257,8 @@ Common Use Cases Summary
      - Pass current object pointer
      - ``return this;``
 
-this Pointer vs. *this
-----------------------
+`this` Pointer vs. `*this`
+---------------------------
 
 Understanding the difference:
 

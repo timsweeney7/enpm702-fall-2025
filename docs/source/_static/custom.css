@@ -190,6 +190,304 @@ table.docutils:not(.deductions-table) tr:hover td {
   background-color: rgba(0, 0, 0, 0.03);
 }
 
-/* ------------------------------------------------------------
- * 7) END OF CUSTOM STYLING
- * ------------------------------------------------------------ */
+/* Make list-table rows more compact */
+table.docutils.compact-table {
+  border-collapse: collapse;
+}
+
+/* Reduce padding and line height */
+table.docutils.compact-table th,
+table.docutils.compact-table td {
+  padding-top: 0.15rem !important;
+  padding-bottom: 0.15rem !important;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  line-height: 1.15;
+}
+
+/* Remove paragraph margins inside cells (Furo/docutils wraps cell text in <p>) */
+table.docutils.compact-table td > p,
+table.docutils.compact-table th > p {
+  margin: 0 !important;
+}
+
+/* Optional: slightly smaller font just for this table */
+table.docutils.compact-table {
+  font-size: 0.95em;
+}
+
+
+/* ============================================================
+ * Custom Admonition: CHANGELOG (Light/Dark + Auto handling)
+ * Matches the variable pattern used for Pseudocode
+ * ============================================================ */
+
+/* Light + default + auto-light */
+:root,
+[data-theme="light"],
+[data-theme="auto"] {
+  --changelog-bg: #f4f7ff;
+  --changelog-title-bg: #dbe4ff;
+  --changelog-border: #3a6ea5;
+  --changelog-icon: #3055a6;
+
+  /* readable text (use Furo fallbacks if available) */
+  --changelog-fg: var(--color-foreground-primary, #1f2937);
+  --changelog-title-fg: var(--color-foreground-primary, #111827);
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+  --changelog-bg: #2a3240;
+  --changelog-title-bg: #39455a;
+  --changelog-border: #89a7ff;
+  --changelog-icon: #a0bfff;
+
+  --changelog-fg: var(--color-foreground-primary, #e5e7eb);
+  --changelog-title-fg: var(--color-foreground-primary, #f3f4f6);
+}
+
+/* Auto mode: follow system preference for dark */
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] {
+    --changelog-bg: #2a3240;
+    --changelog-title-bg: #39455a;
+    --changelog-border: #89a7ff;
+    --changelog-icon: #a0bfff;
+
+    --changelog-fg: var(--color-foreground-primary, #e5e7eb);
+    --changelog-title-fg: var(--color-foreground-primary, #f3f4f6);
+  }
+}
+
+/* Container */
+.admonition.changelog {
+  background-color: var(--changelog-bg);
+  border-left: 0.3rem solid var(--changelog-border);
+  border-radius: 0.35rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  color: var(--changelog-fg);
+}
+
+/* Title bar */
+.admonition.changelog > .admonition-title {
+  background-color: var(--changelog-title-bg);
+  color: var(--changelog-title-fg);
+  font-weight: 600;
+  font-size: 1.05em;
+  border-bottom: 1px solid var(--changelog-border);
+}
+
+/* Font Awesome icon */
+.admonition.changelog > .admonition-title::before {
+  mask: none !important;
+  -webkit-mask: none !important;
+  background: none !important;
+
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  content: "\f1da"; /* fa-rotate */
+  color: var(--changelog-icon);
+
+  display: inline-block;
+  width: 1rem;
+  text-align: center;
+  margin-right: 0.7rem;
+  margin-left: -1.8rem;
+  position: relative;
+  top: 0.1rem;
+}
+
+
+/* ============================================================
+ * Custom Admonition: RESOURCES (Light/Dark + Auto handling)
+ * ============================================================ */
+
+/* Light + default + auto-light */
+:root,
+[data-theme="light"],
+[data-theme="auto"] {
+  --resources-bg: #f6fff8;
+  --resources-title-bg: #e2f7e4;
+  --resources-border: #4caf50;
+  --resources-icon: #2e7d32;
+
+  --resources-fg: var(--color-foreground-primary, #1f2937);
+  --resources-title-fg: var(--color-foreground-primary, #111827);
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+  --resources-bg: #1e2a1f;
+  --resources-title-bg: #2b3c2c;
+  --resources-border: #7be47b;
+  --resources-icon: #9cff9c;
+
+  --resources-fg: var(--color-foreground-primary, #e5e7eb);
+  --resources-title-fg: var(--color-foreground-primary, #f3f4f6);
+}
+
+/* Auto mode: follow system preference for dark */
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] {
+    --resources-bg: #1e2a1f;
+    --resources-title-bg: #2b3c2c;
+    --resources-border: #7be47b;
+    --resources-icon: #9cff9c;
+
+    --resources-fg: var(--color-foreground-primary, #e5e7eb);
+    --resources-title-fg: var(--color-foreground-primary, #f3f4f6);
+  }
+}
+
+/* Container */
+.admonition.resources {
+  background-color: var(--resources-bg);
+  border-left: 0.3rem solid var(--resources-border);
+  border-radius: 0.35rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  color: var(--resources-fg);
+}
+
+/* Title bar */
+.admonition.resources > .admonition-title {
+  background-color: var(--resources-title-bg);
+  color: var(--resources-title-fg);
+  font-weight: 600;
+  font-size: 1.05em;
+  border-bottom: 1px solid var(--resources-border);
+}
+
+/* Font Awesome icon */
+.admonition.resources > .admonition-title::before {
+  mask: none !important;
+  -webkit-mask: none !important;
+  background: none !important;
+
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  content: "\f0c1"; /* fa-link */
+  color: var(--resources-icon);
+
+  display: inline-block;
+  width: 1rem;
+  text-align: center;
+  margin-right: 0.7rem;
+  margin-left: -1.8rem;
+  position: relative;
+  top: 0.1rem;
+}
+
+
+/* ============================================================
+ * Custom Admonition: MYTODO (Light/Dark + Auto handling)
+ * ============================================================ */
+
+/* Light + default + auto-light */
+:root,
+[data-theme="light"],
+[data-theme="auto"] {
+  --mytodo-bg: #fffbea;
+  --mytodo-title-bg: #fff3c4;
+  --mytodo-border: #e6b800;
+  --mytodo-icon: #c49a00;
+
+  --mytodo-fg: var(--color-foreground-primary, #1f2937);
+  --mytodo-title-fg: var(--color-foreground-primary, #111827);
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+  --mytodo-bg: #3a3200;
+  --mytodo-title-bg: #4d4200;
+  --mytodo-border: #ffdf70;
+  --mytodo-icon: #ffe48f;
+
+  --mytodo-fg: var(--color-foreground-primary, #e5e7eb);
+  --mytodo-title-fg: var(--color-foreground-primary, #f3f4f6);
+}
+
+/* Auto mode: follow system preference for dark */
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] {
+    --mytodo-bg: #3a3200;
+    --mytodo-title-bg: #4d4200;
+    --mytodo-border: #ffdf70;
+    --mytodo-icon: #ffe48f;
+
+    --mytodo-fg: var(--color-foreground-primary, #e5e7eb);
+    --mytodo-title-fg: var(--color-foreground-primary, #f3f4f6);
+  }
+}
+
+/* Container */
+.admonition.mytodo {
+  background-color: var(--mytodo-bg);
+  border-left: 0.3rem solid var(--mytodo-border);
+  border-radius: 0.35rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  color: var(--mytodo-fg);
+}
+
+/* Title bar */
+.admonition.mytodo > .admonition-title {
+  background-color: var(--mytodo-title-bg);
+  color: var(--mytodo-title-fg);
+  font-weight: 600;
+  font-size: 1.05em;
+  border-bottom: 1px solid var(--mytodo-border);
+}
+
+/* Font Awesome icon */
+.admonition.mytodo > .admonition-title::before {
+  mask: none !important;
+  -webkit-mask: none !important;
+  background: none !important;
+
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  content: "\f46c"; /* fa-list-check */
+  color: var(--mytodo-icon);
+
+  display: inline-block;
+  width: 1rem;
+  text-align: center;
+  margin-right: 0.7rem;
+  margin-left: -1.8rem;
+  position: relative;
+  top: 0.1rem;
+}
+
+/* Minimal left-line admonition, no icon (Furo) */
+.admonition.leftline {
+  border: none;
+  border-left: 3px solid var(--color-foreground-border);
+  background: none;
+  box-shadow: none;
+  padding: 0.4em 1em;
+  margin: 1em 0;
+  color: var(--color-foreground-primary);
+}
+
+/* The icon is here in Furo — remove it */
+.admonition.leftline > .admonition-title::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Remove the space Furo reserves for the icon */
+.admonition.leftline > .admonition-title {
+  padding-left: 0 !important;
+  background: none;
+  border: none;
+  color: var(--color-foreground-primary);
+  font-weight: 600;
+  margin-bottom: 0.3em;
+}
+
+
+.admonition-todo {
+  border-left: 3px solid var(--color-brand-primary);
+  background: none;
+}
+

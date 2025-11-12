@@ -1,51 +1,114 @@
 @startuml
+skinparam monochrome true
+skinparam shadowing false
 !theme mono
 
-actor Driver as D
-participant Vehicle as V
-participant Engine as E
-participant Route as R
+actor Passenger
+participant "fleet : Fleet" as Fleet
+participant "taxi : RoboTaxi" as Taxi
+participant "route : Route" as Route
+participant "sensor : Sensor" as Sensor
+participant "pickupLoc : Location" as PickupLoc
+participant "dropoffLoc : Location" as DropoffLoc
 
-== Take control ==
-D -> V : takeControl(v: Vehicle)
-V --> D : control granted
+Passenger -> Fleet : dispatchVehicle(pickupLoc, dropoffLoc)
+activate Fleet
 
-== Attempt to start engine ==
-D -> V : startEngine()
-activate V
-alt [isRunning == false]
-  V -> E : start()
-  E --> V : started
-  V -> V : set isRunning = true
-  V --> D : engine started
-else [isRunning == true]
-  V --> D : already running
+Fleet -> Fleet : getAvailableVehicles()
+
+Fleet -> Taxi : getStatus()
+activate Taxi
+Taxi --> Fleet : IDLE
+deactivate Taxi
+
+create Route
+Fleet -> Route : new Route(routeId)
+activate Route
+Route --> Fleet : route
+deactivate Route
+
+Fleet -> Route : addWaypoint(pickupLoc)
+activate Route
+Route --> Fleet : void
+deactivate Route
+
+Fleet -> Route : addWaypoint(dropoffLoc)
+activate Route
+Route --> Fleet : void
+deactivate Route
+
+Fleet -> Route : optimizeRoute()
+activate Route
+Route -> PickupLoc : distanceTo(dropoffLoc)
+activate PickupLoc
+PickupLoc --> Route : Double
+deactivate PickupLoc
+Route --> Fleet : void
+deactivate Route
+
+Fleet -> Taxi : setRoute(route)
+activate Taxi
+Taxi --> Fleet : void
+deactivate Taxi
+
+Fleet --> Passenger : taxi
+deactivate Fleet
+
+loop While en route to pickup
+    Taxi -> Sensor : readData()
+    activate Sensor
+    Sensor --> Taxi : SensorData
+    deactivate Sensor
+    
+    Taxi -> Taxi : updateLocation(newLocation)
+    
+    Taxi -> Taxi : drive()
 end
-deactivate V
 
-== Drive ==
-D -> V : drive()
-activate V
+Taxi -> Passenger : Arrived at pickup
 
-opt [route assigned]
-  V -> R : getNextSegment()
-  R --> V : segment data
+' --- Boarding sequence updated for consistency ---
+' The Passenger's physical action triggers the Taxi to update its state
+Passenger -> Taxi : (Boards vehicle)
+activate Taxi
+' The Taxi calls its own method, as defined in the class diagram
+Taxi -> Taxi : pickupPassenger(Passenger)
+Taxi --> Passenger : (Vehicle ready)
+deactivate Taxi
 
-  loop for each segment
-    V -> E : adjustPower(speed/grade)
-    E --> V : torque delivered
-  end
+loop While en route to dropoff
+    Taxi -> Sensor : readData()
+    activate Sensor
+    Sensor --> Taxi : SensorData
+    deactivate Sensor
+    
+    Taxi -> Taxi : updateLocation(newLocation)
+    
+    Taxi -> Taxi : drive()
+    
+    Taxi -> Route : getDistance()
+    activate Route
+    Route --> Taxi : Double
+    deactivate Route
 end
 
-V --> D : progress update
-deactivate V
+Taxi -> Passenger : Arrived at destination
 
-== Stop and release ==
-D -> V : stopEngine()
-V -> E : stop()
-E --> V : stopped
-V -> V : set isRunning = false
+' --- Exiting sequence updated for consistency ---
+' The Passenger's physical action triggers the Taxi to update its state
+Passenger -> Taxi : (Exits vehicle)
+activate Taxi
+' The Taxi calls its own method, passing the passenger
+Taxi -> Taxi : dropoffPassenger(Passenger)
+Taxi --> Passenger : (Trip complete)
+deactivate Taxi
 
-D -> V : releaseControl()
-V --> D : control released
+Taxi -> Fleet : Trip completed
+activate Fleet
+Fleet -> Taxi : setStatus(IDLE)
+activate Taxi
+Taxi --> Fleet : void
+deactivate Taxi
+deactivate Fleet
+
 @enduml

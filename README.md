@@ -23,6 +23,10 @@
 
 👉 [View Assignment 3 Documentation](https://enpm702-fall-2025.readthedocs.io/en/latest/assignments/rwaIII.html)
 
+## 📘 Assignment 4
+
+👉 [View Assignment 4 Documentation](https://enpm702-fall-2025.readthedocs.io/en/latest/assignments/rwaIV.html)
+
 <!-- ---
 
 ## 📂 Contents

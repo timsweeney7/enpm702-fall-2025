@@ -25,7 +25,7 @@ Learning Outcomes (high level)
 - Build maintainable codebases and prepare for ROS-based development.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :titlesonly:
 
    overview

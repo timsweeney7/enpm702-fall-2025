@@ -2,14 +2,16 @@
 .. _rwaIII:
 
 ====================================================
-Assignment 3 - Robot Kinematics and Control
+Assignment 3
 ====================================================
 
-- **Course:** ENPM702 - C++ for Robotics  
+- **Title:** Robot Kinematics and Control
+- **Course:** ENPM702 - Introductory Robot Programming
+- **Work Mode:** Individual
 - **Duration:** 1.5 weeks  
 - **Due Date:** 11/05/2025  
 - **Total Points:** 36  
-- **Language:** C++17  
+- **Language Standard:** C++17
 
 .. admonition:: Changelog
 

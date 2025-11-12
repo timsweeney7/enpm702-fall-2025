@@ -1,71 +1,158 @@
 @startuml
-'=== Global Style Settings ===
+skinparam monochrome true
+skinparam shadowing false
 !theme mono
 skinparam classAttributeIconSize 0
-
-skinparam class {
-  AbstractFontStyle italic
-}
-
 namespace transportation {
+
+  ' Position struct for sensor mounting
+  class Position <<struct>> {
+    + x : Double
+    + y : Double
+    + z : Double
+  }
+
+  ' Inheritance hierarchy
   abstract class Vehicle {
-    # color : String
-    # model : String
-    # isRunning : Boolean
-    # maxSpeed : int
-    # engine : Engine
-    + startEngine() : void
-    + stopEngine() : void
-    {abstract} + drive() : void
+    - id : String
+    - currentLocation : Location
+    - status : VehicleStatus
+    - route : Route
+    - maxPassengers : Integer
+    - currentPassengerCount : Integer ' <-- Moved from RoboTaxi
+    __
+    + {abstract} drive() : void
+    + updateLocation(location : Location) : void
+    + getStatus() : VehicleStatus
+    + setRoute(route : Route) : void
+    + getRoute() : Route
+    + pickupPassenger(passenger : Passenger) : void ' <-- Updated
+    + dropoffPassenger(passenger : Passenger) : void ' <-- Updated
+  }
+
+  class RoboTaxi {
+    - sensors : List<Sensor>
+    ' - currentPassengerCount : Integer ' <-- Removed
+    __
+    + drive() : void
+    + addSensor(sensor : Sensor) : void
+  }
+
+  class Taxi {
+    - driver : Driver
+    __
+    + drive() : void
+    + assignDriver(driver : Driver) : void
+    + removeDriver() : void
+    + getDriver() : Driver
   }
 
   class Driver {
+    - id : String
     - name : String
-    - licenseId : String
-    - vehicle : Vehicle
-    + takeControl(v: Vehicle) : void
-    + releaseControl() : void
-    + drive() : void
+    - licenseNumber : String
+    - rating : Float
+    __
+    + getId() : String
+    + getName() : String
+    + getLicenseNumber() : String
+    + getRating() : Float
   }
 
-  class Engine {
-    - horsepower : int
-    + start() : void
-    + stop() : void
+  ' Composition - Sensors are part of RoboTaxi
+  class Sensor {
+    - sensorId : String
+    - sensorType : SensorType
+    - positionOnVehicle : Position
+    __
+    + readData() : SensorData
+    + calibrate() : void
+    + getType() : SensorType
+    + getSensorId() : String
   }
 
-  class Car {
-    - numberOfDoors : int
-    + openTrunk() : void
-    + drive() : void
+  enum SensorType {
+    LIDAR
+    CAMERA
+    RADAR
+    GPS
+    IMU
+  }
+
+  enum VehicleStatus {
+    IDLE
+    IN_SERVICE
+    EN_ROUTE
+    CHARGING
+    MAINTENANCE
+    OUT_OF_SERVICE
+  }
+
+  ' Aggregation - Fleet contains Vehicles
+  class Fleet {
+    - id : String
+    - operatorName : String
+    - serviceArea : List<Location>
+    - vehicles : List<Vehicle>
+    __
+    + addVehicle(vehicle : Vehicle) : void
+    + removeVehicle(vehicle : Vehicle) : void
+    + getAvailableVehicles() : List<Vehicle>
+    + dispatchVehicle(pickup : Location, dropoff : Location) : Vehicle
+    + getId() : String
+    + getOperatorName() : String
   }
 
   class Route {
-    - routeId : String
-    - startLocation : String
-    - endLocation : String
-    - distance : double
-    + getRouteInfo() : void
+    - id : String
+    - waypoints : List<Location>
+    __
+    + addWaypoint(location : Location) : void
+    + optimizeRoute() : void
+    + getDistance() : Double
+    + getId() : String
+    + getWaypointCount() : Integer
   }
 
-  class Truck {
-    - cargoCapacity : double
-    + lowerTailgate() : void
-    + drive() : void
+  class Location {
+    - latitude : Double
+    - longitude : Double
+    __
+    + distanceTo(other : Location) : Double
+    + getLatitude() : Double
+    + getLongitude() : Double
   }
 
-  class Train {
-    - numberOfCars : int
-    + blowHorn() : void
-    + drive() : void
+  class Passenger {
+    - id : String
+    - name : String
+    - phoneNumber : String
+    - currentVehicle : Vehicle
+    ' - fleet : Fleet ' <-- Implied by new association
+    __
+    + requestRide(pickup : Location, dropoff : Location) : void
+    ' + boardVehicle(vehicle : Vehicle) : void ' <-- Removed
+    ' + exitVehicle() : void ' <-- Removed
+    + getId() : String
+    + getName() : String
   }
 
-  Vehicle <|-- Car
-  Vehicle <|-- Truck
-  Vehicle <|-- Train
-
-  Vehicle "1" *-- "1" Engine : contains
+  ' Relationships
+  Vehicle <|-- RoboTaxi
+  Vehicle <|-- Taxi
+  
+  RoboTaxi *-- Sensor
+  Taxi --> Driver : operated by
+  
+  Fleet o-- Vehicle
   Vehicle "0..*" --> "0..1" Route : follows
-  Driver "0..1" o-- "1" Vehicle : operates
+  
+  Sensor --> SensorType : has type
+  Sensor *-- "1" Position : has position ' 
+  Vehicle --> Location : located at
+  Vehicle --> VehicleStatus : has status
+  Route *-- "1..*" Location : consists of ' 
+  Passenger "0..*" --> "0..1" Vehicle : rides in
+  Passenger "0..*" --> "1" Fleet : requests from '
 }
 @enduml
