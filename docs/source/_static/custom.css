@@ -7,6 +7,35 @@
  * - Full compatibility with Furo dark/light/auto modes
  * ============================================================ */
 
+ /* ============================================================
+ *  GLOBAL TYPOGRAPHY OVERRIDES
+ *  Adjusts base font size and heading scale across the site
+ * ============================================================ */
+
+/* Set the base font size for the entire documentation */
+html {
+  font-size: 17px; /* Adjust to 15px or 17px as desired */
+}
+
+/* Body text */
+body {
+  font-size: 1rem;      /* 1 rem = 16 px if base is 16 px */
+  line-height: 1.6;
+}
+
+/* Headings hierarchy (optional) */
+h1 { font-size: 1.8rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.1rem; }
+h5, h6 { font-size: 1rem; }
+
+/* Code and admonition fine-tuning */
+pre, code {
+  font-size: 1rem;
+}
+
+
 /* ------------------------------------------------------------
  * 1) Import Font Awesome (v6.5) for icon support
  * ------------------------------------------------------------ */
@@ -491,3 +520,18 @@ table.docutils.compact-table {
   background: none;
 }
 
+.copy-image-btn {
+  background-color: var(--color-foreground-secondary, #444);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  margin-bottom: 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.copy-image-btn:hover {
+  opacity: 1.0;
+}

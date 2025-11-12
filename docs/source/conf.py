@@ -19,6 +19,7 @@ extensions = [
     "sphinx_proof",
     "sphinx.ext.todo",
     "sphinx.ext.mathjax",
+    'sphinxcontrib.plantuml'
 ]
 
 todo_include_todos = True
@@ -46,7 +47,7 @@ html_theme_options = {
     "source_branch": "main",
     # "source_directory": "docs/source/",
     "light_logo": "enpm702light.png",
-    "dark_logo": "enpm702dark.png"
+    "dark_logo": "enpm702dark.png",
 }
 
 numfig = True
@@ -57,8 +58,8 @@ numfig_format = {
 html_static_path = ["_static"]
 master_doc = "index"
 
-html_static_path = ["_static"]
 html_css_files = ["custom.css"]
+html_js_files = ['custom.js']
 
 # ----------------------------------------------------------------------
 # Custom CSS for Furo Theme

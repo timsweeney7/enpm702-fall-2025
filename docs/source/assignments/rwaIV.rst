@@ -850,7 +850,7 @@ Abstract Class and Polymorphism
 
 Define an abstract class representing a general maze-solving algorithm. This class must specify the interface shared by all algorithm implementations. Derived classes should override the relevant methods to implement their specific navigation logic.
 
-Polymorphism must be demonstrated by allowing the robot to hold a reference or pointer to the abstract base class and to invoke derived algorithm implementations at runtime. This enables flexible switching between algorithms without altering the robot’s logic.
+Polymorphism must be demonstrated by allowing the robot to hold a reference or pointer to the abstract base class and to invoke derived algorithm implementations at runtime. This enables flexible switching between algorithms without altering the robot's logic.
 
 Composition
 ^^^^^^^^^^^^^^^^^^^^^^^^
