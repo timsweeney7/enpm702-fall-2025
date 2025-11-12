@@ -1,7 +1,8 @@
 @startuml
 skinparam monochrome true
 skinparam shadowing false
-!theme mono
+' !theme mono
+!theme crt-amber
 skinparam classAttributeIconSize 0
 namespace transportation {
 
@@ -19,20 +20,19 @@ namespace transportation {
     - status : VehicleStatus
     - route : Route
     - maxPassengers : Integer
-    - currentPassengerCount : Integer ' <-- Moved from RoboTaxi
+    - currentPassengerCount : Integer
     __
     + {abstract} drive() : void
     + updateLocation(location : Location) : void
     + getStatus() : VehicleStatus
     + setRoute(route : Route) : void
     + getRoute() : Route
-    + pickupPassenger(passenger : Passenger) : void ' <-- Updated
-    + dropoffPassenger(passenger : Passenger) : void ' <-- Updated
+    + pickupPassenger(passenger : Passenger) : void
+    + dropoffPassenger(passenger : Passenger) : void
   }
 
   class RoboTaxi {
     - sensors : List<Sensor>
-    ' - currentPassengerCount : Integer ' <-- Removed
     __
     + drive() : void
     + addSensor(sensor : Sensor) : void
@@ -128,11 +128,8 @@ namespace transportation {
     - name : String
     - phoneNumber : String
     - currentVehicle : Vehicle
-    ' - fleet : Fleet ' <-- Implied by new association
     __
     + requestRide(pickup : Location, dropoff : Location) : void
-    ' + boardVehicle(vehicle : Vehicle) : void ' <-- Removed
-    ' + exitVehicle() : void ' <-- Removed
     + getId() : String
     + getName() : String
   }
@@ -140,19 +137,18 @@ namespace transportation {
   ' Relationships
   Vehicle <|-- RoboTaxi
   Vehicle <|-- Taxi
-  
-  RoboTaxi *-- Sensor
-  Taxi --> Driver : operated by
-  
-  Fleet o-- Vehicle
-  Vehicle "0..*" --> "0..1" Route : follows
-  
-  Sensor --> SensorType : has type
-  Sensor *-- "1" Position : has position ' 
-  Vehicle --> Location : located at
-  Vehicle --> VehicleStatus : has status
-  Route *-- "1..*" Location : consists of ' 
+
+  RoboTaxi "1" *-- "1..*" Sensor : equipped with
+  Taxi "0..1" --> "1" Driver : operated by
+  Fleet "1" o-- "0..*" Vehicle : manages
+  Vehicle "1" --> "0..1" Route : follows
+  Sensor "* " --> "1" SensorType : has type
+  Sensor "1" *-- "1" Position : has position
+  Vehicle "1" --> "1" Location : located at
+  Vehicle "1" --> "1" VehicleStatus : has status
+  Route "1" *-- "1..*" Location : consists of
   Passenger "0..*" --> "0..1" Vehicle : rides in
-  Passenger "0..*" --> "1" Fleet : requests from '
+  Passenger "0..*" --> "1" Fleet : requests from
+
 }
 @enduml

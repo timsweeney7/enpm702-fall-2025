@@ -14,7 +14,7 @@
 
 /* Set the base font size for the entire documentation */
 html {
-  font-size: 17px; /* Adjust to 15px or 17px as desired */
+  font-size: 16px; /* Adjust to 15px or 17px as desired */
 }
 
 /* Body text */
@@ -32,7 +32,7 @@ h5, h6 { font-size: 1rem; }
 
 /* Code and admonition fine-tuning */
 pre, code {
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 
 

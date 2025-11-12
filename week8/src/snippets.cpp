@@ -20,7 +20,7 @@
 #include <vector>
 
 // default main so CMake builds
-int main(){}
+// int main(){}
 
 // //====</1>====//
 // // Function that takes const std::string&
@@ -86,7 +86,7 @@ int main(){}
 //     // std::cout << "Index: " << result.value_or(-1) << '\n';
 // }
 
-// //====</5>====//
+//====</5>====//
 // class String {
 //   public:
 //     String() { std::cout << "String default ctor\n"; }
@@ -98,9 +98,9 @@ int main(){}
 
 // class A {
 //   public:
-//     A() {
+//     A(): name_{"Default"} {
 //         std::cout << "A constructor\n";
-//         name_ = String("Default");
+//         // name_ = String("Default");
 //     }
 
 //   private:
@@ -109,12 +109,12 @@ int main(){}
 
 // int main() { A a; }
 
-// //====</6>====//
+//====</6>====//
 // class A {
 //   public:
-//     A(int x, int &y) {
-//         c_ = x;  // Wrong
-//         r_ = y; // Wrong
+//     A(int x, int &y): c_{x}, r_{y} {
+//         // c_ = x;  // Wrong
+//         // r_ = y; // Wrong
 //     }
 
 //   private:
@@ -127,20 +127,21 @@ int main(){}
 //     A a(10, some_value);
 // }
 
-// //====</7>====//
+//====</7>====//
 // class Rectangle {
 //   private:
-//     double area_;   // 1. initialized first
-//     double width_;  // 2. initialized second
-//     double height_; // 3. initialized third
+//   double width_;  // 2. initialized second
+//   int s_;  // 2. initialized second
+// //   double height_; // 3. initialized third
+// //   double area_;   // 1. initialized first
 //   public:
-//     Rectangle(double w, double h)
-//         : width_{w}, height_{h}, area_{width_ * height_} {
+//     Rectangle(double w, int s)
+//         : width_{w}, s_{s} {
 //         // area_ is computed using uninitialized width_ and height_
 //     }
 // };
 
-// int main() { Rectangle(4, 10); }
+// int main() { Rectangle(4, 4.5); }
 
 // //====</8>====//
 // class Point {
@@ -188,22 +189,24 @@ int main(){}
 //     c.increment().increment().increment().print();
 // }
 
-// //====</10>====//
-// class Vehicle {
-//   private:
-//     inline static int vehicle_count_{0}; // C++17 and later
-//     std::string model_;
+//====</10>====//
+class Vehicle {
+  private:
+    inline static int vehicle_count_{0}; // C++17 and later
+    std::string model_;
 
-//   public:
-//     Vehicle(const std::string &model) : model_{model} { vehicle_count_++; };
+  public:
+    Vehicle(const std::string &model) : model_{model} { vehicle_count_++; };
 
-//     [[nodiscard]] static int get_vehicle_count() noexcept {
-//         return vehicle_count_;
-//     };
-// };
+    [[nodiscard]] static int get_vehicle_count() noexcept {
+        return vehicle_count_;
+    };
+};
 
-// int main() {
-//     std::cout << Vehicle::get_vehicle_count() << '\n'; // 0
-//     Vehicle vehicle("Sedan");
-//     std::cout << vehicle.get_vehicle_count() << '\n'; // 1
-// }
+int main() {
+    std::cout << Vehicle::get_vehicle_count() << '\n'; // 0
+    Vehicle vehicle("Sedan");
+    std::cout << vehicle.get_vehicle_count() << '\n'; // 1
+    Vehicle vehicle2("Sedan");
+    std::cout << vehicle2.get_vehicle_count() << '\n'; // 1
+}

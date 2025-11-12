@@ -23,6 +23,10 @@ class Vehicle {
   int max_speed_;
 
  public:
+  Vehicle(const std::string& color, const std::string& model, int max_speed)
+      : color_{color}, model_{model}, max_speed_{max_speed} {
+  }
+
   void start_engine();
   void stop_engine();
   void drive();
@@ -31,6 +35,6 @@ class Vehicle {
    * @brief This method is used for debugging only
    * @todo Remove in production code
    */
-  void print_status();
+  void print_status() const;
 };  // class Vehicle
 }  // namespace transportation

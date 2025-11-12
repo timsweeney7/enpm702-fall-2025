@@ -1,37 +1,41 @@
 #pragma once
 
-#include "vehicle.hpp"
 #include <memory>
 
-namespace transportation
-{
-    // Forward declaration
-    class Driver;
+#include "vehicle.hpp"
 
-    // Driver-operated vehicle implementation.
-    class Taxi : public Vehicle
-    {
-    public:
-        // Constructor
-        Taxi(const std::string &id, int max_passengers)
-            : Vehicle(id, max_passengers) {}
+namespace transportation {
+// Forward declaration
+class Driver;
 
-        // Getters
-        [[nodiscard]] std::shared_ptr<Driver> get_driver() const noexcept { return driver_; }
+// Driver-operated vehicle implementation.
+class Taxi final : public Vehicle {
+ public:
+  // Constructor
+  Taxi(const std::string& id, int max_passengers)
+      : Vehicle(id, max_passengers) {
+  }
 
-        // Setters
-        void set_driver(std::shared_ptr<Driver> driver) { driver_ = driver; }
+  // Getters
+  [[nodiscard]] std::shared_ptr<Driver> get_driver() const noexcept {
+    return driver_;
+  }
 
-        // Overridden method
-        void drive();
+  // Setters
+  void set_driver(std::shared_ptr<Driver> driver) {
+    driver_ = driver;
+  }
 
-        // Other methods
-        void assign_driver(std::shared_ptr<Driver> driver);
-        void remove_driver();
+  // Overridden method
+  void drive();
 
-    private:
-        // Taxi has an association with a Driver
-        std::shared_ptr<Driver> driver_{nullptr};
-    };
+  // Other methods
+  void assign_driver(std::shared_ptr<Driver> driver);
+  void remove_driver();
 
-} // namespace transportation
+ private:
+  // Taxi has an association with a Driver
+  std::shared_ptr<Driver> driver_{nullptr};
+};
+
+}  // namespace transportation

@@ -59,7 +59,7 @@ html_static_path = ["_static"]
 master_doc = "index"
 
 html_css_files = ["custom.css"]
-html_js_files = ['custom.js']
+# html_js_files = ['custom.js']
 
 # ----------------------------------------------------------------------
 # Custom CSS for Furo Theme

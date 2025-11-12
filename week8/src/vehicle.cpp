@@ -11,7 +11,7 @@ void transportation::Vehicle::stop_engine() {
 void transportation::Vehicle::drive() {
 }
 
-void transportation::Vehicle::print_status() {
+void transportation::Vehicle::print_status() const {
   std::cout << "Status" << '\n';
   std::cout << "======" << '\n';
   std::cout << "Color: " << color_ << '\n';
