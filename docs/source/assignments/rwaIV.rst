@@ -705,11 +705,11 @@ Demonstration
         .. raw:: html
 
             <div style="display:flex; justify-content:center; align-items:center; gap:1rem;">
-                <img src="../_static/rwa4/iterations.png"
+                <img src="../_static/rwa4/iterations_light.png"
                     alt="Demo"
                     class="only-light"
                     style="width:100%; border-radius:8px;">
-                <img src="../_static/rwa4/iterations.png"
+                <img src="../_static/rwa4/iterations_dark.png"
                     alt="Demo"
                     class="only-dark"
                     style="width:100%; border-radius:8px;">
