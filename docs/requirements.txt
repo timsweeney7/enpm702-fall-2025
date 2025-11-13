@@ -12,7 +12,6 @@ sphinx-design>=0.6
 sphinx-copybutton
 sphinxcontrib-mermaid
 sphinx-proof==0.3.0
-sphinxcontrib-plantuml
 
 # Autodoc and type support
 sphinx-autodoc-typehints
@@ -20,4 +19,3 @@ sphinx-autodoc-typehints
 # Optional: improves docstring parsing and code rendering
 sphinxcontrib-htmlhelp
 sphinxcontrib-serializinghtml
-sphinx-fontawesome

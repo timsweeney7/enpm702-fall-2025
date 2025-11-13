@@ -19,8 +19,9 @@ extensions = [
     "sphinx_proof",
     "sphinx.ext.todo",
     "sphinx.ext.mathjax",
-    'sphinxcontrib.plantuml'
+    "sphinx.ext.viewcode",
 ]
+
 
 todo_include_todos = True
 
@@ -52,7 +53,7 @@ html_theme_options = {
 
 numfig = True
 numfig_format = {
-    'pseudocode': 'Algorithm %s'  # This is what sphinxcontrib-pseudocode uses
+    "pseudocode": "Algorithm %s"  # This is what sphinxcontrib-pseudocode uses
 }
 
 html_static_path = ["_static"]
