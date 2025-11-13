@@ -7,7 +7,8 @@ Assignment 4
 
 .. admonition:: Changelog
    :class: changelog
-
+   
+   - **v2.0 (11/12/2025)** — Updated figures.
    - **v1.0 (11/07/2025)** — Initial release of Assignment 4 instructions.
 
 .. admonition:: Resources
@@ -29,7 +30,7 @@ Assignment 4
    * - **Version**
      - v1.0
    * - **Due Date**
-     - 11/25/2025
+     - 11/27/2025
    * - **Points**
      - 50 pts + 5 bonus pts
    * - **Work Mode**
