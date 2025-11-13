@@ -1,5 +1,6 @@
 import os, sys
 from datetime import date
+import json
 
 project = "ENPM702 Fall 2025"
 author = "Z. Kootbally"
@@ -23,7 +24,9 @@ extensions = [
 ]
 
 
-todo_include_todos = True
+# Prerender options for better performance
+katex_prerender = True
+
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),

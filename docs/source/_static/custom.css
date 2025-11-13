@@ -7,31 +7,49 @@
  * - Full compatibility with Furo dark/light/auto modes
  * ============================================================ */
 
- /* ============================================================
+/* ============================================================
  *  GLOBAL TYPOGRAPHY OVERRIDES
  *  Adjusts base font size and heading scale across the site
  * ============================================================ */
 
 /* Set the base font size for the entire documentation */
 html {
-  font-size: 16px; /* Adjust to 15px or 17px as desired */
+  font-size: 16px;
+  /* Adjust to 15px or 17px as desired */
 }
 
 /* Body text */
 body {
-  font-size: 1rem;      /* 1 rem = 16 px if base is 16 px */
+  font-size: 1rem;
+  /* 1 rem = 16 px if base is 16 px */
   line-height: 1.6;
 }
 
 /* Headings hierarchy (optional) */
-h1 { font-size: 1.8rem; }
-h2 { font-size: 1.5rem; }
-h3 { font-size: 1.25rem; }
-h4 { font-size: 1.1rem; }
-h5, h6 { font-size: 1rem; }
+h1 {
+  font-size: 1.8rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+h4 {
+  font-size: 1.1rem;
+}
+
+h5,
+h6 {
+  font-size: 1rem;
+}
 
 /* Code and admonition fine-tuning */
-pre, code {
+pre,
+code {
   font-size: 1.2rem;
 }
 
@@ -47,7 +65,14 @@ pre, code {
 
 /* Light + default + auto-light */
 :root,
-[data-theme="light"],
+[data-theme="light"] {
+  --sd-color-danger: var(--color-problematic);
+  --sd-color-warning: #ff9800;
+  --sd-color-success: #28a745;
+  --sd-color-info: #17a2b8;
+  --sd-color-primary: var(--color-brand-primary);
+}
+
 [data-theme="auto"] {
   /* Pseudocode */
   --furo-color-pseudocode-background: #f4f7f9;
@@ -64,6 +89,11 @@ pre, code {
   --rubric-border: #000000;
   --rubric-header-bg: #000000;
   --rubric-header-text: #ffffff;
+
+  --sd-color-danger: #ff6b6b;
+  --sd-color-warning: #ffa726;
+  --sd-color-success: #66bb6a;
+  --sd-color-info: #4fc3f7;
 }
 
 /* Dark mode */
@@ -81,6 +111,28 @@ pre, code {
   --rubric-border: #d0d0d0;
   --rubric-header-bg: #2a2a2a;
   --rubric-header-text: #ffffff;
+
+  --sd-color-danger: #ff6b6b;
+  --sd-color-warning: #ffa726;
+  --sd-color-success: #66bb6a;
+  --sd-color-info: #4fc3f7;
+}
+
+/* Apply to borders */
+.sd-border-danger {
+    border-color: var(--sd-color-danger) !important;
+}
+
+.sd-border-warning {
+    border-color: var(--sd-color-warning) !important;
+}
+
+.sd-border-success {
+    border-color: var(--sd-color-success) !important;
+}
+
+.sd-border-info {
+    border-color: var(--sd-color-info) !important;
 }
 
 /* Auto mode: follow system preference for dark */
@@ -112,13 +164,13 @@ pre, code {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
-.admonition.pseudocode > .admonition-title {
+.admonition.pseudocode>.admonition-title {
   background-color: var(--furo-color-pseudocode-title-background);
   font-weight: 600;
 }
 
 /* Icon (Font Awesome) */
-.admonition.pseudocode > .admonition-title::before {
+.admonition.pseudocode>.admonition-title::before {
   /* Remove Furo default icon mask */
   mask: none !important;
   -webkit-mask: none !important;
@@ -127,7 +179,8 @@ pre, code {
   /* Font Awesome glyph */
   font-family: "Font Awesome 6 Free";
   font-weight: 900;
-  content: "\f121"; /* fa-code */
+  content: "\f121";
+  /* fa-code */
   color: var(--furo-color-pseudocode-border);
 
   /* Tight spacing & alignment */
@@ -235,8 +288,8 @@ table.docutils.compact-table td {
 }
 
 /* Remove paragraph margins inside cells (Furo/docutils wraps cell text in <p>) */
-table.docutils.compact-table td > p,
-table.docutils.compact-table th > p {
+table.docutils.compact-table td>p,
+table.docutils.compact-table th>p {
   margin: 0 !important;
 }
 
@@ -299,7 +352,7 @@ table.docutils.compact-table {
 }
 
 /* Title bar */
-.admonition.changelog > .admonition-title {
+.admonition.changelog>.admonition-title {
   background-color: var(--changelog-title-bg);
   color: var(--changelog-title-fg);
   font-weight: 600;
@@ -308,14 +361,15 @@ table.docutils.compact-table {
 }
 
 /* Font Awesome icon */
-.admonition.changelog > .admonition-title::before {
+.admonition.changelog>.admonition-title::before {
   mask: none !important;
   -webkit-mask: none !important;
   background: none !important;
 
   font-family: "Font Awesome 6 Free";
   font-weight: 900;
-  content: "\f1da"; /* fa-rotate */
+  content: "\f1da";
+  /* fa-rotate */
   color: var(--changelog-icon);
 
   display: inline-block;
@@ -379,7 +433,7 @@ table.docutils.compact-table {
 }
 
 /* Title bar */
-.admonition.resources > .admonition-title {
+.admonition.resources>.admonition-title {
   background-color: var(--resources-title-bg);
   color: var(--resources-title-fg);
   font-weight: 600;
@@ -388,14 +442,15 @@ table.docutils.compact-table {
 }
 
 /* Font Awesome icon */
-.admonition.resources > .admonition-title::before {
+.admonition.resources>.admonition-title::before {
   mask: none !important;
   -webkit-mask: none !important;
   background: none !important;
 
   font-family: "Font Awesome 6 Free";
   font-weight: 900;
-  content: "\f0c1"; /* fa-link */
+  content: "\f0c1";
+  /* fa-link */
   color: var(--resources-icon);
 
   display: inline-block;
@@ -459,7 +514,7 @@ table.docutils.compact-table {
 }
 
 /* Title bar */
-.admonition.mytodo > .admonition-title {
+.admonition.mytodo>.admonition-title {
   background-color: var(--mytodo-title-bg);
   color: var(--mytodo-title-fg);
   font-weight: 600;
@@ -468,14 +523,15 @@ table.docutils.compact-table {
 }
 
 /* Font Awesome icon */
-.admonition.mytodo > .admonition-title::before {
+.admonition.mytodo>.admonition-title::before {
   mask: none !important;
   -webkit-mask: none !important;
   background: none !important;
 
   font-family: "Font Awesome 6 Free";
   font-weight: 900;
-  content: "\f46c"; /* fa-list-check */
+  content: "\f46c";
+  /* fa-list-check */
   color: var(--mytodo-icon);
 
   display: inline-block;
@@ -499,13 +555,13 @@ table.docutils.compact-table {
 }
 
 /* The icon is here in Furo — remove it */
-.admonition.leftline > .admonition-title::before {
+.admonition.leftline>.admonition-title::before {
   content: none !important;
   display: none !important;
 }
 
 /* Remove the space Furo reserves for the icon */
-.admonition.leftline > .admonition-title {
+.admonition.leftline>.admonition-title {
   padding-left: 0 !important;
   background: none;
   border: none;
@@ -532,7 +588,7 @@ table.docutils.compact-table {
   opacity: 0.7;
   transition: opacity 0.2s;
 }
+
 .copy-image-btn:hover {
   opacity: 1.0;
 }
-
