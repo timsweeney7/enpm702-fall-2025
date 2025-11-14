@@ -19,6 +19,10 @@
 
 👉 [View Lecture 8 Documentation](https://enpm702-fall-2025.readthedocs.io/en/latest/lecture8/lecture8.html)
 
+## 📘 Lecture 9: OOP (Advanced)
+
+👉 [View Lecture 9 Documentation](https://enpm702-fall-2025.readthedocs.io/en/latest/lecture8/lecture0.html)
+
 ## 📘 Assignment 3
 
 👉 [View Assignment 3 Documentation](https://enpm702-fall-2025.readthedocs.io/en/latest/assignments/rwaIII.html)
