@@ -3,7 +3,7 @@ Polymorphism
 ============
 
 .. card::
-    :class-card: sd-border-secondary sd-border-3 sd-shadow-md sd-rounded-1
+    :class-card: sd-border-secondary sd-border-5 sd-shadow-md sd-rounded-1
     
     **Definition:** Polymorphism (Greek: *poly* = many, *morph* = form) is a core OOP principle. Polymorphism allows objects of different classes to be treated uniformly through a common interface.
 
@@ -32,7 +32,7 @@ Compile-Time Polymorphism
 --------------------------
 
 .. card::
-    :class-card: sd-border-secondary sd-border-2
+    :class-card: sd-border-secondary sd-border-5 sd-shadow-md sd-rounded-1
     
     **Definition:** Compile-time polymorphism (also called *static polymorphism* or *early binding*) is resolved during compilation. The compiler determines which function to call based on the **static type** at compile time.
 
@@ -107,7 +107,7 @@ Method Redefinition
 ~~~~~~~~~~~~~~~~~~~
 
 .. card::
-    :class-card: sd-border-secondary
+    :class-card: sd-border-secondary sd-border-5 sd-shadow-md sd-rounded-1
     
     **Definition:** Method redefinition allows a derived class to provide its own implementation of a base class method when the base class version is too general or needs specialization.
 
@@ -144,7 +144,7 @@ Runtime Polymorphism
 --------------------
 
 .. card::
-    :class-card: sd-border-secondary sd-border-3 sd-shadow-md
+    :class-card: sd-border-secondary sd-border-5 sd-shadow-md sd-rounded-1
     
     **Definition:** Runtime polymorphism (*dynamic polymorphism* or *late binding*) decides which ``virtual`` method implementation runs based on the *dynamic type* (actual object type) at runtime, not the static type of the pointer/reference.
 
@@ -176,7 +176,7 @@ The ``virtual`` Keyword
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. card::
-    :class-card: sd-border-secondary sd-border-2
+    :class-card: sd-border-secondary sd-border-5 sd-shadow-md sd-rounded-1
     
     **Definition:** The ``virtual`` keyword tells the compiler to use **dynamic dispatch** for a method.
 
@@ -519,7 +519,7 @@ The ``override`` Keyword
 ------------------------
 
 .. card::
-    :class-card: sd-border-secondary sd-border-2
+    :class-card: sd-border-secondary sd-border-5 sd-shadow-md sd-rounded-1
     
     **Definition:** The ``override`` keyword is a **safety feature** that tells the compiler "I intend this method to override a base class virtual method".
 
@@ -592,12 +592,12 @@ Requirements for Runtime Polymorphism
         Derived classes inherit from common base (``Vehicle``)
 
     .. grid-item-card:: 2. Base Handle ✓
-        :class-card: sd-border-info sd-border-2
+        :class-card: sd-border-primary sd-border-2
         
         Use ``Vehicle&``, ``Vehicle*``, ``unique_ptr<Vehicle>``
 
     .. grid-item-card:: 3. Virtual Method ✓
-        :class-card: sd-border-success sd-border-2
+        :class-card: sd-border-primary sd-border-2
         
         Mark interface ``virtual``; override in derived classes
 

@@ -575,28 +575,28 @@ Key Takeaways
 .. grid:: 1 2 2 2
     :gutter: 3
 
-    .. grid-item-card:: 🔗 Association
+    .. grid-item-card:: Association
         :class-card: sd-border-info
         
         **"uses-a"**
         
         Independent objects that interact
 
-    .. grid-item-card:: 🔷 Aggregation
+    .. grid-item-card:: Aggregation
         :class-card: sd-border-info
         
         **"has-a"**
         
         Weak ownership, parts can survive independently
 
-    .. grid-item-card:: 🔶 Composition
+    .. grid-item-card:: Composition
         :class-card: sd-border-info
         
         **"has-a"**
         
         Strong ownership, parts destroyed with whole
 
-    .. grid-item-card:: 🧬 Inheritance
+    .. grid-item-card:: Inheritance
         :class-card: sd-border-info
         
         **"is-a"**
