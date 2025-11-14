@@ -727,7 +727,7 @@ The process ensures complete coverage of all accessible areas within the maze st
 Demonstration
 """""""""""""""
 
-DFS has reached a node requiring backtracking. The algorithm cannot move in any direction: North, East, and West are blocked by walls, while South leads to an already-visited node at :math:`(0,2) \in v`.
+DFS has reached a node requiring backtracking. The algorithm cannot move in any direction: North, East, and West are blocked by walls, while South leads to an already-visited node at :math:`(0,2) \in v`. DFS will backtrack to the previous node in the stack.
 
 
 .. only:: html
@@ -757,7 +757,7 @@ DFS has reached a node requiring backtracking. The algorithm cannot move in any 
 
 ----
 
-The algorithm cannot explore North, East, or West due to walls, and cannot go South because that node has already been visited (:math:`(0,1) \in v`).
+The algorithm cannot explore East or West due to walls, and cannot go North or South because these nodes have already been visited (:math:`(0,3) \in v` and :math:`(0,1) \in v`). DFS will backtrack to the previous node in the stack.
 
 .. only:: html
 
@@ -786,7 +786,7 @@ The algorithm cannot explore North, East, or West due to walls, and cannot go So
 
 ----
 
-The algorithm cannot explore North, East, or West due to walls, and cannot go South because that node has already been visited (:math:`(0,0) \in v`).
+The algorithm cannot explore East or West due to walls, and cannot go North or South because these nodes have already been visited (:math:`(0,2) \in v` and :math:`(0,0) \in v`). DFS will backtrack to the previous node in the stack.
 
 .. only:: html
 

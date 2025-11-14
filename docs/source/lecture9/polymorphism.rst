@@ -2,26 +2,60 @@
 Polymorphism
 ============
 
-**Definition:** Polymorphism (Greek: *poly* = many, *morph* = form) is a core OOP principle. Polymorphism allows objects of different classes to be treated uniformly through a common interface.
+.. card::
+    :class-card: sd-border-secondary sd-border-3 sd-shadow-md sd-rounded-1
+    
+    **Definition:** Polymorphism (Greek: *poly* = many, *morph* = form) is a core OOP principle. Polymorphism allows objects of different classes to be treated uniformly through a common interface.
 
 C++ supports two types of polymorphism:
 
-- **Compile-time polymorphism** — resolved at compile time
-- **Runtime polymorphism** — resolved at runtime
+.. grid:: 2
+    :gutter: 3
+
+    .. grid-item-card:: ⚡ Compile-Time Polymorphism
+        :class-card: sd-border-info sd-border-2
+        
+        Resolved at compile time
+        
+        **Static polymorphism / Early binding**
+
+    .. grid-item-card:: ⚡ Runtime Polymorphism
+        :class-card: sd-border-success sd-border-2
+        
+        Resolved at runtime
+        
+        **Dynamic polymorphism / Late binding**
+
+----
 
 Compile-Time Polymorphism
 --------------------------
 
-**Definition:** Compile-time polymorphism (also called *static polymorphism* or *early binding*) is resolved during compilation. The compiler determines which function to call based on the **static type** at compile time.
+.. card::
+    :class-card: sd-border-secondary sd-border-2
+    
+    **Definition:** Compile-time polymorphism (also called *static polymorphism* or *early binding*) is resolved during compilation. The compiler determines which function to call based on the **static type** at compile time.
 
 **Key Characteristics:**
 
-- Resolution happens at compile time
-- Based on the declared type of the variable
-- No runtime overhead
-- Uses function/operator overloading and method redefinition
+.. grid:: 2 2 4 4
+    :gutter: 2
 
-**Examples:** function overloading, operator overloading, and method redefinition.
+    .. grid-item-card:: When
+        
+        Resolution at compile time
+
+    .. grid-item-card:: Based On
+        
+        Declared type of variable
+
+    .. grid-item-card:: Performance
+        
+        No runtime overhead
+
+    .. grid-item-card:: Mechanisms
+        
+        Overloading & redefinition
 
 .. note::
 
@@ -32,11 +66,26 @@ Method Order Check
 
 When a method is called on a derived class object:
 
-1. The compiler first checks if the method exists in the derived class
-2. If not found, it searches up the inheritance hierarchy through base classes
-3. The compiler uses the first matching method it finds
+.. grid:: 3
+    :gutter: 2
+
+    .. grid-item-card:: 1. First
+        :class-card: sd-border-primary
+        
+        Check derived class
+
+    .. grid-item-card:: 2. Then
+        :class-card: sd-border-info
+        
+        Search up inheritance hierarchy
+
+    .. grid-item-card:: 3. Finally
+        :class-card: sd-border-success
+        
+        Use first match found
 
 .. code-block:: cpp
+   :caption: Method Resolution Example
 
    class Base {
    public:
@@ -54,14 +103,17 @@ When a method is called on a derived class object:
        derived.test();  // Calls Base::test()
    }
 
-In the example, ``Base::test()`` is used since we did not provide a version for ``Derived::test()``.
-
 Method Redefinition
 ~~~~~~~~~~~~~~~~~~~
 
-**Definition:** Method redefinition allows a derived class to provide its own implementation of a base class method when the base class version is too general or needs specialization.
+.. card::
+    :class-card: sd-border-secondary
+    
+    **Definition:** Method redefinition allows a derived class to provide its own implementation of a base class method when the base class version is too general or needs specialization.
 
 .. code-block:: cpp
+   :caption: Method Redefinition Example
+   :emphasize-lines: 10-12
 
    class Base {
    public:
@@ -86,16 +138,35 @@ Method Redefinition
 
    Method redefinition is compile-time polymorphism because the method selection is based on the static type known at compile time.
 
+----
+
 Runtime Polymorphism
 --------------------
 
-**Definition:** Runtime polymorphism (*dynamic polymorphism* or *late binding*) decides which ``virtual`` method implementation runs based on the *dynamic type* (actual object type) at runtime, not the static type of the pointer/reference.
+.. card::
+    :class-card: sd-border-secondary sd-border-3 sd-shadow-md
+    
+    **Definition:** Runtime polymorphism (*dynamic polymorphism* or *late binding*) decides which ``virtual`` method implementation runs based on the *dynamic type* (actual object type) at runtime, not the static type of the pointer/reference.
 
 **Key Requirements:**
 
-1. A ``virtual`` method in a base class
-2. A call through a *base* reference or *base* pointer to a *derived* object
-3. The actual method called depends on the real object type at runtime
+.. grid:: 3
+    :gutter: 3
+
+    .. grid-item-card:: 1. Virtual Method
+        :class-card: sd-border-primary
+        
+        A ``virtual`` method in base class
+
+    .. grid-item-card:: 2. Base Handle
+        :class-card: sd-border-primary
+        
+        Call through base reference/pointer
+
+    .. grid-item-card:: 3. Dynamic Dispatch
+        :class-card: sd-border-primary
+        
+        Method depends on actual object type
 
 .. important::
 
@@ -104,38 +175,62 @@ Runtime Polymorphism
 The ``virtual`` Keyword
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-**Definition:** The ``virtual`` keyword tells the compiler to use **dynamic dispatch** for a method. This means:
+.. card::
+    :class-card: sd-border-secondary sd-border-2
+    
+    **Definition:** The ``virtual`` keyword tells the compiler to use **dynamic dispatch** for a method.
 
-1. The method call is resolved at **runtime**, not compile time
-2. The **actual object type** determines which method runs, not the pointer/reference type
-3. The compiler creates a **vtable** (virtual method table) to track which implementation to call
+**What It Does:**
 
-.. code-block:: cpp
+.. grid:: 3
+    :gutter: 2
 
-   // in class Vehicle (vehicle.hpp)
-   class Vehicle {
-   public:
-       // virtual -> can be overridden in derived classes
-       virtual void drive();
-       
-       // NOT virtual -> cannot be overridden (static binding)
-       void update_location(const Location& location);
-   };
+    .. grid-item-card:: ⏰ Runtime Resolution
+        
+        Method call resolved at runtime, not compile time
 
-.. code-block:: cpp
+    .. grid-item-card:: 🎯 Actual Type
+        
+        Actual object type determines which method runs
 
-   int main() {
-       using transportation::Vehicle;
-       using transportation::RoboTaxi;
-       
-       // Actual object: RoboTaxi
-       // Pointer type: Vehicle
-       std::unique_ptr<Vehicle> rt = 
-           std::make_unique<RoboTaxi>("ROBOTAXI-001", 4);
-       
-       rt->drive();              // Calls RoboTaxi::drive() - dynamic dispatch
-       rt->update_location(loc); // Calls Vehicle::update_location() - static binding
-   }
+    .. grid-item-card:: 📊 VTable
+        
+        Compiler creates virtual method table
+
+.. tab-set::
+
+    .. tab-item:: Virtual Declaration
+
+        .. code-block:: cpp
+           :caption: Virtual Method Declaration
+           :emphasize-lines: 4,7
+
+           class Vehicle {
+           public:
+               // virtual -> can be overridden in derived classes
+               virtual void drive();
+               
+               // NOT virtual -> cannot be overridden (static binding)
+               void update_location(const Location& location);
+           };
+
+    .. tab-item:: Usage Example
+
+        .. code-block:: cpp
+           :caption: Dynamic Dispatch in Action
+
+           int main() {
+               using transportation::Vehicle;
+               using transportation::RoboTaxi;
+               
+               // Actual object: RoboTaxi
+               // Pointer type: Vehicle
+               std::unique_ptr<Vehicle> rt = 
+                   std::make_unique<RoboTaxi>("ROBOTAXI-001", 4);
+               
+               rt->drive();              // Calls RoboTaxi::drive() - dynamic dispatch
+               rt->update_location(loc); // Calls Vehicle::update_location() - static binding
+           }
 
 .. warning::
 
@@ -145,120 +240,150 @@ The ``virtual`` Keyword
 The Problem Without Polymorphism
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Challenge:** You must drive different vehicle types uniformly (``RoboTaxi``, ``Taxi``, ...), yet each type performs the task differently.
+.. card::
+    :class-card: sd-border-warning
+    
+    **Challenge:** You must drive different vehicle types uniformly (``RoboTaxi``, ``Taxi``, ...), yet each type performs the task differently.
 
-**Non-Polymorphic Overloads (Not Scalable):**
+.. dropdown:: ❌ Non-Polymorphic Solution (Not Scalable)
+    :class-container: sd-border-danger
+    :open:
 
-.. code-block:: cpp
+    .. code-block:: cpp
+       :caption: Overloads for Each Type
 
-   // Overloads choose at compile time based on the static type
-   void run_shift(transportation::RoboTaxi& v) { v.drive(); }
-   void run_shift(transportation::Taxi& v)     { v.drive(); }
+       // Overloads choose at compile time based on the static type
+       void run_shift(transportation::RoboTaxi& v) { v.drive(); }
+       void run_shift(transportation::Taxi& v)     { v.drive(); }
 
-   int main() {
-       transportation::RoboTaxi rt{"ROBOTAXI-001", 4};
-       transportation::Taxi     tx{"TAXI-001", 4};
-       
-       run_shift(rt);  // Calls RoboTaxi version
-       run_shift(tx);  // Calls Taxi version
-   }
+       int main() {
+           transportation::RoboTaxi rt{"ROBOTAXI-001", 4};
+           transportation::Taxi     tx{"TAXI-001", 4};
+           
+           run_shift(rt);  // Calls RoboTaxi version
+           run_shift(tx);  // Calls Taxi version
+       }
 
-.. warning::
+    .. warning::
 
-   Overload resolution is a compile-time choice. Each new derived type requires another overload. Bodies tend to duplicate (*violates DRY principle*). Does not support heterogeneous collections.
+       Overload resolution is a compile-time choice. Each new derived type requires another overload. Bodies tend to duplicate (*violates DRY principle*). Does not support heterogeneous collections.
 
-**Polymorphic Solution (Scalable):**
+.. dropdown:: ✅ Polymorphic Solution (Scalable)
+    :class-container: sd-border-success
+    :open:
 
-.. code-block:: cpp
+    .. code-block:: cpp
+       :caption: One Function for All Types
 
-   // Base interface with virtual method
-   class Vehicle {
-   public:
-       virtual ~Vehicle() = default;  // Essential for polymorphic bases
-       virtual void drive();          // Virtual (can be overridden)
-   };
+       // Base interface with virtual method
+       class Vehicle {
+       public:
+           virtual ~Vehicle() = default;  // Essential for polymorphic bases
+           virtual void drive();          // Virtual (can be overridden)
+       };
 
-   // One function works for ALL current and future derived vehicle types
-   void run_shift(transportation::Vehicle& v) {
-       v.drive();  // Runtime dispatch - calls the actual object's drive()
-   }
+       // One function works for ALL current and future derived vehicle types
+       void run_shift(transportation::Vehicle& v) {
+           v.drive();  // Runtime dispatch - calls the actual object's drive()
+       }
 
-   // Pointer variant (e.g., ownership with unique_ptr)
-   void run_shift(std::unique_ptr<transportation::Vehicle> v) {
-       v->drive();  // Runtime dispatch
-   }
+       // Pointer variant (e.g., ownership with unique_ptr)
+       void run_shift(std::unique_ptr<transportation::Vehicle> v) {
+           v->drive();  // Runtime dispatch
+       }
 
-   int main() {
-       auto rt = std::make_unique<transportation::RoboTaxi>("ROBOTAXI-001", 4);
-       auto tx = std::make_unique<transportation::Taxi>("TAXI-001", 4);
-       
-       run_shift(*rt);             // Calls RoboTaxi::drive()
-       run_shift(std::move(tx));   // Calls Taxi::drive()
-   }
+       int main() {
+           auto rt = std::make_unique<transportation::RoboTaxi>("ROBOTAXI-001", 4);
+           auto tx = std::make_unique<transportation::Taxi>("TAXI-001", 4);
+           
+           run_shift(*rt);             // Calls RoboTaxi::drive()
+           run_shift(std::move(tx));   // Calls Taxi::drive()
+       }
 
-.. important::
+    .. important::
 
-   Only one ``run_shift()`` is needed. The call *site* uses a base reference or pointer. The *target* method is determined at runtime based on the actual object type (the most-derived override).
+       Only one ``run_shift()`` is needed. The call *site* uses a base reference or pointer. The *target* method is determined at runtime based on the actual object type (the most-derived override).
+
+----
 
 When to Use ``auto`` vs. Explicit Base Type
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------------------
 
-**Question:** When should you use ``auto`` versus an explicit base type?
+.. card::
+    :class-card: sd-border-primary sd-border-2
+    
+    **Question:** When should you use ``auto`` versus an explicit base type?
+    
+    **Answer:** The choice depends on **where polymorphism needs to happen**.
 
-**Answer:** The choice depends on **where polymorphism needs to happen**.
+.. tab-set::
 
-**Explicit Base Type:**
+    .. tab-item:: Explicit Base Type
 
-.. code-block:: cpp
+        .. code-block:: cpp
+           :caption: Base Type from Start
 
-   std::unique_ptr<Vehicle> rt = std::make_unique<RoboTaxi>(...);
-   
-   // Polymorphic calls directly
-   rt->drive();
+           std::unique_ptr<Vehicle> rt = std::make_unique<RoboTaxi>(...);
+           
+           // Polymorphic calls directly
+           rt->drive();
 
-**Use when:**
+        **Use when:**
+        
+        ✓ Multiple polymorphic calls needed locally
+        
+        ✓ Polymorphism happens at point of creation
+        
+        ✓ Building polymorphic collections
 
-- Multiple polymorphic calls needed locally
-- Polymorphism happens at point of creation
-- Building polymorphic collections
+    .. tab-item:: Using auto
 
-**Using** ``auto``:
+        .. code-block:: cpp
+           :caption: Concrete Type Initially
 
-.. code-block:: cpp
+           auto rt = std::make_unique<RoboTaxi>(...);
+           
+           // Direct calls to RoboTaxi
+           rt->drive();
+           
+           // Pass to polymorphic function
+           run_shift(std::move(rt));
 
-   auto rt = std::make_unique<RoboTaxi>(...);
-   
-   // Direct calls to RoboTaxi
-   rt->drive();
-   
-   // Pass to polymorphic function
-   run_shift(std::move(rt));
-
-**Use when:**
-
-- Concrete type needed initially
-- Polymorphism delegated to function calls
-- Need derived-specific methods before passing to functions
+        **Use when:**
+        
+        ✓ Concrete type needed initially
+        
+        ✓ Polymorphism delegated to function calls
+        
+        ✓ Need derived-specific methods before passing to functions
 
 The Container Problem with ``auto``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**This WORKS** - function parameter accepts conversion:
+.. grid:: 2
+    :gutter: 3
 
-.. code-block:: cpp
+    .. grid-item-card:: ✅ This WORKS
+        :class-card: sd-border-success
+        
+        **Function parameter accepts conversion:**
+        
+        .. code-block:: cpp
+        
+           auto rt = std::make_unique<RoboTaxi>(...);
+           run_shift(std::move(rt));  // ✓ Converts at call
 
-   auto rt = std::make_unique<RoboTaxi>(...);  // unique_ptr<RoboTaxi>
-   run_shift(std::move(rt));  // Converts to unique_ptr<Vehicle> at call
-
-**This FAILS** - container requires exact type match:
-
-.. code-block:: cpp
-
-   auto rt = std::make_unique<RoboTaxi>(...);  // unique_ptr<RoboTaxi>
-   std::vector<std::unique_ptr<Vehicle>> fleet;
-   
-   fleet.push_back(std::move(rt));     // ERROR: Type mismatch!
-   fleet.emplace_back(std::move(rt));  // ERROR: Still doesn't work!
+    .. grid-item-card:: ❌ This FAILS
+        :class-card: sd-border-danger
+        
+        **Container requires exact type match:**
+        
+        .. code-block:: cpp
+        
+           auto rt = std::make_unique<RoboTaxi>(...);
+           std::vector<std::unique_ptr<Vehicle>> fleet;
+           
+           fleet.push_back(std::move(rt));  // ✗ Type mismatch!
 
 .. warning::
 
@@ -270,6 +395,7 @@ Complete Comparison Table
 .. list-table::
    :header-rows: 1
    :widths: 50 25 25
+   :class: compact-table
 
    * - Operation
      - Explicit Base Type
@@ -298,25 +424,29 @@ Complete Comparison Table
 Why This Happens: Type System Rules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Function Parameters:**
+.. tab-set::
 
-.. code-block:: cpp
+    .. tab-item:: Function Parameters ✓
 
-   void run_shift(std::unique_ptr<Vehicle> v);  // Accepts base type
-   
-   auto rt = std::make_unique<RoboTaxi>(...);   // unique_ptr<RoboTaxi>
-   run_shift(std::move(rt));  // ✓ Compiler converts RoboTaxi* → Vehicle*
-                              //   Conversion happens at call boundary
+        .. code-block:: cpp
+           :caption: Conversions Work at Call Boundary
 
-**Container Storage:**
+           void run_shift(std::unique_ptr<Vehicle> v);  // Accepts base type
+           
+           auto rt = std::make_unique<RoboTaxi>(...);   // unique_ptr<RoboTaxi>
+           run_shift(std::move(rt));  // ✓ Compiler converts RoboTaxi* → Vehicle*
+                                      //   Conversion happens at call boundary
 
-.. code-block:: cpp
+    .. tab-item:: Container Storage ✗
 
-   std::vector<std::unique_ptr<Vehicle>> fleet;  // Template parameter is FIXED
-   
-   auto rt = std::make_unique<RoboTaxi>(...);    // unique_ptr<RoboTaxi>
-   fleet.push_back(std::move(rt));  // ✗ Template types don't convert!
-                                    // unique_ptr<RoboTaxi> ≠ unique_ptr<Vehicle>
+        .. code-block:: cpp
+           :caption: Template Types Don't Convert
+
+           std::vector<std::unique_ptr<Vehicle>> fleet;  // Template parameter is FIXED
+           
+           auto rt = std::make_unique<RoboTaxi>(...);    // unique_ptr<RoboTaxi>
+           fleet.push_back(std::move(rt));  // ✗ Template types don't convert!
+                                            // unique_ptr<RoboTaxi> ≠ unique_ptr<Vehicle>
 
 .. warning::
 
@@ -325,64 +455,94 @@ Why This Happens: Type System Rules
 Solutions for Polymorphic Collections
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Option 1: Direct construction (BEST)**
+.. tab-set::
 
-.. code-block:: cpp
+    .. tab-item:: Option 1: Direct Construction ⭐
 
-   std::vector<std::unique_ptr<Vehicle>> fleet;
-   fleet.push_back(std::make_unique<RoboTaxi>(...));  // ✓ Implicit conversion
-   fleet.push_back(std::make_unique<Taxi>(...));      // ✓ Implicit conversion
+        .. code-block:: cpp
+           :caption: Best Practice
 
-**Option 2: Use base type from the start**
+           std::vector<std::unique_ptr<Vehicle>> fleet;
+           fleet.push_back(std::make_unique<RoboTaxi>(...));  // ✓ Implicit conversion
+           fleet.push_back(std::make_unique<Taxi>(...));      // ✓ Implicit conversion
 
-.. code-block:: cpp
+    .. tab-item:: Option 2: Base Type from Start
 
-   std::unique_ptr<Vehicle> rt = std::make_unique<RoboTaxi>(...);
-   rt->drive();  // Polymorphic call
-   fleet.push_back(std::move(rt));  // ✓ Types match exactly
+        .. code-block:: cpp
+           :caption: Clear Intent
 
-**Option 3: Explicit cast (AVOID - verbose and error-prone)**
+           std::unique_ptr<Vehicle> rt = std::make_unique<RoboTaxi>(...);
+           rt->drive();  // Polymorphic call
+           fleet.push_back(std::move(rt));  // ✓ Types match exactly
 
-.. code-block:: cpp
+    .. tab-item:: Option 3: Explicit Cast
 
-   auto rt = std::make_unique<RoboTaxi>(...);
-   fleet.push_back(std::unique_ptr<Vehicle>(std::move(rt)));  // ✓ But ugly
+        .. code-block:: cpp
+           :caption: Avoid - Verbose and Error-Prone
+
+           auto rt = std::make_unique<RoboTaxi>(...);
+           fleet.push_back(std::unique_ptr<Vehicle>(std::move(rt)));  // ✓ But ugly
 
 Decision Framework
 ~~~~~~~~~~~~~~~~~~
 
-1. **Need to store in a base-type container?**
-   
-   → Use **explicit base type** OR **direct insertion**
+.. grid:: 2 2 2 2
+    :gutter: 3
 
-2. **Need polymorphic calls at point of use?**
-   
-   → Use **explicit base type**
+    .. grid-item-card:: Container Storage?
+        :class-card: sd-border-primary
+        
+        → Use **explicit base type** OR **direct insertion**
 
-3. **Need derived-specific methods before passing to functions?**
-   
-   → Use **auto**, then pass to functions
+    .. grid-item-card:: Polymorphic Calls at Use?
+        :class-card: sd-border-primary
+        
+        → Use **explicit base type**
 
-4. **Only passing to functions, no container storage?**
-   
-   → Either works; **auto** is more flexible
+    .. grid-item-card:: Derived-Specific Methods First?
+        :class-card: sd-border-primary
+        
+        → Use **auto**, then pass to functions
+
+    .. grid-item-card:: Only Function Calls?
+        :class-card: sd-border-primary
+        
+        → Either works; **auto** is more flexible
 
 .. important::
 
    **Rule of thumb:** If you're building polymorphic collections, use explicit base type or direct insertion. If you're only calling functions, ``auto`` is fine.
 
-The ``override`` Keyword
-~~~~~~~~~~~~~~~~~~~~~~~~
+----
 
-**Definition:** The ``override`` keyword is a **safety feature** that tells the compiler "I intend this method to override a base class virtual method".
+The ``override`` Keyword
+------------------------
+
+.. card::
+    :class-card: sd-border-secondary sd-border-2
+    
+    **Definition:** The ``override`` keyword is a **safety feature** that tells the compiler "I intend this method to override a base class virtual method".
 
 **Benefits:**
 
-- **Catches typos:** If signatures don't match, compilation fails
-- **Documents intent:** Makes it clear this overrides a base method
-- **Prevents accidental hiding:** Detects when you think you're overriding but aren't
+.. grid:: 3
+    :gutter: 3
+
+    .. grid-item-card:: Catches Typos
+        
+        If signatures don't match, compilation fails
+
+    .. grid-item-card:: Documents Intent
+        
+        Makes it clear this overrides a base method
+
+    .. grid-item-card:: Prevents Hiding
+        
+        Detects when you think you're overriding but aren't
 
 .. code-block:: cpp
+   :caption: Using override for Safety
+   :emphasize-lines: 8
 
    class Vehicle {
    public:
@@ -400,10 +560,13 @@ The ``override`` Keyword
 
    Always use ``override`` when overriding virtual methods. It's free safety!
 
+----
+
 Avoid Slicing & Embrace Polymorphic Collections
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------------------
 
 .. code-block:: cpp
+   :caption: Polymorphic Collection Example
 
    std::vector<std::unique_ptr<transportation::Vehicle>> fleet;
    fleet.emplace_back(std::make_unique<transportation::RoboTaxi>("ROBOTAXI-001", 4));
@@ -418,32 +581,76 @@ Avoid Slicing & Embrace Polymorphic Collections
    Do not store derived objects by value in a ``std::vector<Vehicle>``. This causes *object slicing* where derived class data is lost and polymorphism doesn't work. Use owning pointers (``unique_ptr``, ``shared_ptr``), or non-owning pointers/references with external lifetime management.
 
 Requirements for Runtime Polymorphism
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------------
 
-1. **Inheritance relationship** ✓
-   
-   - Derived classes inherit from a common base (``Vehicle``)
+.. grid:: 3
+    :gutter: 3
 
-2. **Base handle to derived object** ✓
-   
-   - Use ``Vehicle&``, ``Vehicle*``, ``std::unique_ptr<Vehicle>``, or ``std::shared_ptr<Vehicle>``
+    .. grid-item-card:: 1.Inheritance ✓
+        :class-card: sd-border-primary sd-border-2
+        
+        Derived classes inherit from common base (``Vehicle``)
 
-3. **``virtual`` method in the base** ✓
-   
-   - Mark the interface ``virtual``; override it in derived classes
+    .. grid-item-card:: 2. Base Handle ✓
+        :class-card: sd-border-info sd-border-2
+        
+        Use ``Vehicle&``, ``Vehicle*``, ``unique_ptr<Vehicle>``
+
+    .. grid-item-card:: 3. Virtual Method ✓
+        :class-card: sd-border-success sd-border-2
+        
+        Mark interface ``virtual``; override in derived classes
 
 .. note::
 
    The call target depends on the **dynamic type** of the object (what it actually is at runtime), not the **static type** of the handle (how the pointer/reference was declared). This is *late binding*.
 
-Key Takeaways
--------------
+----
 
-- **Compile-time polymorphism:** Function/operator overloading, method redefinition
-- **Runtime polymorphism:** Virtual methods with dynamic dispatch
-- Use ``virtual`` in base classes for methods that derived classes will override
-- Always use ``override`` in derived classes for safety
-- Prefer explicit base type when building polymorphic collections
-- Use ``auto`` when you need concrete type initially, then pass to functions
-- Remember: ``unique_ptr<Derived>`` ≠ ``unique_ptr<Base>`` for containers
-- Direct insertion works best for polymorphic collections
+Key Takeaways
+=============
+
+.. card::
+    :class-card: sd-border-primary sd-border-3 sd-shadow-lg
+    
+    **Core Concepts:**
+    
+    • **Compile-time polymorphism:** Function/operator overloading, method redefinition
+    
+    • **Runtime polymorphism:** Virtual methods with dynamic dispatch
+    
+    • Use ``virtual`` in base classes for methods that derived classes will override
+    
+    • Always use ``override`` in derived classes for safety
+    
+    • Prefer explicit base type when building polymorphic collections
+    
+    • Use ``auto`` when you need concrete type initially, then pass to functions
+    
+    • Remember: ``unique_ptr<Derived>`` ≠ ``unique_ptr<Base>`` for containers
+    
+    • Direct insertion works best for polymorphic collections
+
+.. grid:: 1 2 2 4
+    :gutter: 3
+    :class-container: sd-text-center
+
+    .. grid-item-card:: Compile-Time
+        :class-card: sd-border-info
+        
+        Static resolution
+
+    .. grid-item-card:: Runtime
+        :class-card: sd-border-info
+        
+        Dynamic dispatch
+
+    .. grid-item-card:: Virtual
+        :class-card: sd-border-info
+        
+        Enable polymorphism
+
+    .. grid-item-card:: Override
+        :class-card: sd-border-info
+        
+        Safety feature

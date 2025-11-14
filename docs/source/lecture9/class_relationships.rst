@@ -8,37 +8,37 @@ Class relationships describe how classes interact and depend on each other. They
     :gutter: 3
     :class-container: sd-text-center
 
-    .. grid-item-card:: 🔗 Association
+    .. grid-item-card:: Association
         :link: association
         :link-type: ref
-        :class-card: sd-border-info
+        :class-card: sd-border-info icon-uml
         
         "uses-a"
         
         Independent objects
         
-    .. grid-item-card:: 🔷 Aggregation
+    .. grid-item-card:: Aggregation
         :link: aggregation
         :link-type: ref
-        :class-card: sd-border-info
+        :class-card: sd-border-info icon-uml
         
         "has-a"
         
         Weak ownership
         
-    .. grid-item-card:: 🔶 Composition
+    .. grid-item-card:: Composition
         :link: composition
         :link-type: ref
-        :class-card: sd-border-info
+        :class-card: sd-border-info icon-uml
         
         "part-of"
         
         Strong ownership
         
-    .. grid-item-card:: 🧬 Inheritance
+    .. grid-item-card:: Inheritance
         :link: inheritance
         :link-type: ref
-        :class-card: sd-border-info
+        :class-card: sd-border-info icon-uml
         
         "is-a"
         
@@ -244,28 +244,29 @@ Comparison: Aggregation vs Composition
     :gutter: 2
 
     .. grid-item-card:: Aggregation (Weak)
-        :class-card: sd-border-info
+        :class-card: sd-border-info icon-aggregation
         
         .. code-block:: cpp
         
            std::vector<Vehicle*> vehicles_;
            // Non-owning pointers
         
-        🔷 Hollow diamond in UML
+        Hollow diamond in UML
         
         ✓ Parts survive independently
 
     .. grid-item-card:: Composition (Strong)
-        :class-card: sd-border-warning
+        :class-card: sd-border-warning icon-composition
         
         .. code-block:: cpp
         
            std::vector<Sensor> sensors_;
            // Owned by value
         
-        🔶 Filled diamond in UML
+        Filled diamond in UML
         
         ✗ Parts destroyed with container
+
 
 ----
 
@@ -474,7 +475,7 @@ Constructors in Inheritance
 ----------------------------
 
 .. card::
-    :class-card: sd-border-danger sd-border-3 sd-shadow-md sd-rounded-1
+    :class-card: sd-border-warning sd-border-3 sd-shadow-md sd-rounded-1
     
     **Critical Rule**
     
@@ -483,7 +484,7 @@ Constructors in Inheritance
 **Problem:** How do we initialize base class attributes when constructing a derived object?
 
 .. dropdown:: Wrong Approach #1: Initialize base class members in derived class initializer list
-    :color: danger
+    :class-container: sd-border-danger
 
     .. code-block:: cpp
 
@@ -504,7 +505,7 @@ Constructors in Inheritance
        };
 
 .. dropdown:: Wrong Approach #2: Assign base class members in constructor body
-    :color: danger
+    :class-container: sd-border-danger
 
     .. code-block:: cpp
 
@@ -523,7 +524,7 @@ Constructors in Inheritance
        This approach works but is performed in two steps and will not work if the attribute is a ``const`` or a reference.
 
 .. dropdown:: Correct Approach: Explicitly call the base class constructor
-    :color: success
+    :class-container: sd-border-success
     :open:
 
     .. code-block:: cpp
@@ -557,7 +558,8 @@ Constructors in Inheritance
        }
 
 .. card::
-    :class-card: sd-bg-success sd-text-white
+    :class-card: sd-border-success
+
     
     ✅ **Best Practice**
     
@@ -602,12 +604,10 @@ Key Takeaways
         Derived class extends base class
 
 .. card::
-    :class-card: sd-border-success sd-border-3 sd-shadow-md sd-rounded-1
+    :class-card: sd-border-primary sd-border-3 sd-shadow-md sd-rounded-1
     
     **Additional Guidelines:**
     
-    ✓ Always use ``public`` inheritance for is-a relationships
-    
-    ✓ Call base class constructors explicitly in derived class initializer lists
-    
-    ✓ Focus on single inheritance for clarity and maintainability
+    - Always use ``public`` inheritance for is-a relationships
+    - Call base class constructors explicitly in derived class initializer lists
+    - Focus on single inheritance for clarity and maintainability

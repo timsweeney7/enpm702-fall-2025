@@ -1,46 +1,153 @@
 References
 ==========
 
-- **Books:**
 
-  - *Effective C++* by Scott Meyers - Items on class design
-  - *C++ Primer* (5th Edition) - Chapter 7: Classes
-  - *Design Patterns* by Gang of Four - Foundational OOP patterns
-  - ISO/IEC 14882:2017 — *C++17 Standard*.
-  - B. Stroustrup, *The C++ Programming Language*, 4th Ed.
+.. dropdown:: 🏛️ Lecture 9
+    :class-container: sd-border-secondary
+    :open:
 
-- **UML and Design:**
-
-  - .. raw:: html
-
-       <a href="https://plantuml.com/" target="_blank">PlantUML Documentation</a><br>
-       <a href="https://www.uml.org/" target="_blank">UML Class Diagrams</a>
+    .. card::
+        :class-card: sd-border-secondary
+        
+        `Lecture 9 (slides) <https://drive.google.com/file/d/1qWoadj-7QuM9c4Z0mWz9JxOu87HvUJZG/view?usp=sharing>`_
 
 
-- **cppreference:**
 
-  - .. raw:: html
+.. dropdown:: 📚 Books
+    :class-container: sd-border-secondary
+    :open:
 
-       <a href="https://en.cppreference.com/" target="_blank">cppreference (main site)</a><br>
-       <a href="https://en.cppreference.com/w/cpp/language/classes" target="_blank">Classes</a>
-       <a href="https://en.cppreference.com/w/cpp/string/basic_string_view" target="_blank">std::string_view</a>
-       <a href="https://en.cppreference.com/w/cpp/utility/optional" target="_blank">std::optional</a>
-       <a href="https://en.cppreference.com/w/cpp/language/attributes" target="_blank">Attributes</a>
+    .. grid:: 1 1 2 2
+        :gutter: 2
 
+        .. grid-item-card:: Scott Meyers
+            :class-card: sd-border-secondary
+            
+            **Effective C++**
+            
+            Items on class design and best practices
 
-- **ISO C++ Foundation:**
+        .. grid-item-card:: Stanley Lippman
+            :class-card: sd-border-secondary
+            
+            **C++ Primer (5th Edition)**
+            
+            Chapter 7: Classes
 
-  - .. raw:: html
+        .. grid-item-card:: Gang of Four
+            :class-card: sd-border-secondary
+            
+            **Design Patterns**
+            
+            Foundational OOP patterns
 
-       <a href="https://isocpp.org/" target="_blank">ISO C++ Foundation (main site)</a><br>
-       <a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rr-smart" target="_blank">Smart pointers guidelines</a>
+        .. grid-item-card:: ISO/IEC & Bjarne Stroustrup
+            :class-card: sd-border-secondary
+            
+            **C++17 Standard & The C++ Programming Language**
+            
+            Official specifications and comprehensive reference
 
-- **C++ Core Guidelines (Bjarne Stroustrup et al.):**
+.. dropdown:: 🌐 Online Documentation
+    :class-container: sd-border-secondary
+    :open:
 
-  - .. raw:: html
+    .. card::
+        :class-card: sd-border-secondary
+        
+        **cppreference.com** - Complete C++ Reference
 
-       <a href="https://isocpp.github.io/CppCoreGuidelines/" target="_blank">Main Guidelines Page</a><br>
-       <a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#S-class" target="_blank">Classes</a><br>
-       <a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#S-philosophy" target="_blank">General best practices and philosophy</a>
+        - `Main Site <https://en.cppreference.com/>`_
+        - `Classes <https://en.cppreference.com/w/cpp/language/classes>`_
+        - `std::string_view <https://en.cppreference.com/w/cpp/string/basic_string_view>`_
+        - `std::optional <https://en.cppreference.com/w/cpp/utility/optional>`_
+        - `Attributes <https://en.cppreference.com/w/cpp/language/attributes>`_
 
-- ENPM702 Lecture 8 slides (Fall 2025).
+                
+                
+
+.. dropdown:: 🎨 UML and Design Tools
+    :class-container: sd-border-secondary
+    :open:
+
+    .. grid:: 1 1 2 2
+        :gutter: 3
+
+        .. grid-item-card:: PlantUML
+            :class-card: sd-border-secondary
+            :link: https://plantuml.com/
+            
+            Text-based UML diagram creation
+            
+            +++
+            
+            • Simple syntax
+            
+            • Class diagrams
+            
+            • Sequence diagrams
+
+        .. grid-item-card:: UML.org
+            :class-card: sd-border-secondary
+            :link: https://www.uml.org/
+            
+            Official UML specification
+            
+            +++
+            
+            • Class diagram notation
+            
+            • Relationship types
+            
+            • Standards and best practices
+
+.. dropdown:: 📖 C++ Core Guidelines & ISO Foundation
+    :class-container: sd-border-secondary
+    :open:
+
+    .. card::
+        :class-card: sd-border-secondary
+        
+        **C++ Core Guidelines** by Bjarne Stroustrup et al.
+        
+        Modern C++ best practices and guidelines
+    
+    .. grid:: 2 2 3 3
+        :gutter: 2
+
+        .. grid-item-card:: 🏠 Main Guidelines
+            :link: https://isocpp.github.io/CppCoreGuidelines/
+            :class-card: sd-border-secondary
+            
+            Complete guidelines
+
+        .. grid-item-card:: 🏛️ Classes
+            :link: https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#S-class
+            :class-card: sd-border-secondary
+            
+            Class design rules
+
+        .. grid-item-card:: 💡 Philosophy
+            :link: https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#S-philosophy
+            :class-card: sd-border-secondary
+            
+            Core principles
+
+        .. grid-item-card:: 🧠 Smart Pointers
+            :link: https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rr-smart
+            :class-card: sd-border-secondary
+            
+            Resource management
+
+        .. grid-item-card:: 🌐 ISO C++
+            :link: https://isocpp.org/
+            :class-card: sd-border-secondary
+            
+            Official foundation
+
+        .. grid-item-card:: 📚 Resources
+            :link: https://isocpp.org/
+            :class-card: sd-border-secondary
+            
+            Standards & community
+

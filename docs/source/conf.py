@@ -62,7 +62,10 @@ numfig_format = {
 html_static_path = ["_static"]
 master_doc = "index"
 
-html_css_files = ["custom.css"]
+html_css_files = [
+    "custom.css",
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css",
+]
 # html_js_files = ['custom.js']
 
 # ----------------------------------------------------------------------
