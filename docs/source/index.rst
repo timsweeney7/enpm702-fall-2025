@@ -32,4 +32,5 @@ Learning Outcomes (high level)
    lecture6/lecture6
    lecture7/lecture7
    lecture8/lecture8
+   lecture9/lecture9
    assignments

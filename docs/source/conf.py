@@ -1,5 +1,6 @@
 import os, sys
 from datetime import date
+import json
 
 project = "ENPM702 Fall 2025"
 author = "Z. Kootbally"
@@ -19,9 +20,13 @@ extensions = [
     "sphinx_proof",
     "sphinx.ext.todo",
     "sphinx.ext.mathjax",
+    "sphinx.ext.viewcode",
 ]
 
-todo_include_todos = True
+
+# Prerender options for better performance
+katex_prerender = True
+
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
@@ -46,19 +51,22 @@ html_theme_options = {
     "source_branch": "main",
     # "source_directory": "docs/source/",
     "light_logo": "enpm702light.png",
-    "dark_logo": "enpm702dark.png"
+    "dark_logo": "enpm702dark.png",
 }
 
 numfig = True
 numfig_format = {
-    'pseudocode': 'Algorithm %s'  # This is what sphinxcontrib-pseudocode uses
+    "pseudocode": "Algorithm %s"  # This is what sphinxcontrib-pseudocode uses
 }
 
 html_static_path = ["_static"]
 master_doc = "index"
 
-html_static_path = ["_static"]
-html_css_files = ["custom.css"]
+html_css_files = [
+    "custom.css",
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css",
+]
+# html_js_files = ['custom.js']
 
 # ----------------------------------------------------------------------
 # Custom CSS for Furo Theme

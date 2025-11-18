@@ -7,7 +7,9 @@ Assignment 4
 
 .. admonition:: Changelog
    :class: changelog
-
+   
+   - **v3.0 (11/12/2025)** — Added demo for the backtracking mechanism.
+   - **v2.0 (11/12/2025)** — Updated figures.
    - **v1.0 (11/07/2025)** — Initial release of Assignment 4 instructions.
 
 .. admonition:: Resources
@@ -27,9 +29,9 @@ Assignment 4
    :class: compact-table
 
    * - **Version**
-     - v1.0
+     - v3.0
    * - **Due Date**
-     - 11/25/2025
+     - 11/27/2025
    * - **Points**
      - 50 pts + 5 bonus pts
    * - **Work Mode**
@@ -408,15 +410,9 @@ To maintain consistency in maze traversal, the following directional priority se
 
 This ordering ensures deterministic behavior across different implementations and makes debugging more predictable. The algorithm will always attempt to move North first when multiple directions are available.
 
-Backtracking Mechanism
-^^^^^^^^^^^^^^^^^^^^^^^^
 
-When the algorithm reaches a position where no unvisited adjacent cells are available, the backtracking process begins. The algorithm retraces its steps along the current path, returning to previously visited nodes to identify unexplored branches. This systematic retreat continues until either:
 
-1. An unvisited node is discovered along the backtracked path
-2. All possible paths from the current branch have been exhausted
 
-The process ensures complete coverage of all accessible areas within the maze structure while maintaining the integrity of the search path. Backtracking is what allows DFS to explore all possible solutions systematically.
 
 Implementation Details
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -705,16 +701,136 @@ Demonstration
         .. raw:: html
 
             <div style="display:flex; justify-content:center; align-items:center; gap:1rem;">
-                <img src="../_static/rwa4/iterations.png"
+                <img src="../_static/rwa4/iterations_light.png"
                     alt="Demo"
                     class="only-light"
                     style="width:100%; border-radius:8px;">
-                <img src="../_static/rwa4/iterations.png"
+                <img src="../_static/rwa4/iterations_dark.png"
                     alt="Demo"
                     class="only-dark"
                     style="width:100%; border-radius:8px;">
             </div>
 
+
+
+Backtracking Mechanism
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+When the algorithm reaches a position where no unvisited adjacent cells are available, the backtracking process begins. The algorithm retraces its steps along the current path, returning to previously visited nodes to identify unexplored branches. This systematic retreat continues until either:
+
+1. An unvisited node is discovered along the backtracked path
+2. All possible paths from the current branch have been exhausted
+
+The process ensures complete coverage of all accessible areas within the maze structure while maintaining the integrity of the search path. Backtracking is what allows DFS to explore all possible solutions systematically.
+
+
+Demonstration
+"""""""""""""""
+
+DFS has reached a node requiring backtracking. The algorithm cannot move in any direction: North, East, and West are blocked by walls, while South leads to an already-visited node at :math:`(0,2) \in v`. DFS will backtrack to the previous node in the stack.
+
+
+.. only:: html
+
+        .. raw:: html
+
+            <div style="display:flex; justify-content:center; align-items:center; gap:1rem;">
+                <img src="../_static/rwa4/backtracking1_light.png"
+                    alt="Demo"
+                    class="only-light"
+                    style="width:30%; border-radius:8px;">
+                <img src="../_static/rwa4/backtracking1_dark.png"
+                    alt="Demo"
+                    class="only-dark"
+                    style="width:30%; border-radius:8px;">
+            </div>
+
+
+.. admonition:: Demo
+   :class: leftline
+
+   - :math:`s=[(0,3),(0,2),(0,1),(0,0)]`
+   - :math:`n=(0,3)`
+   - :math:`v=[(0,0),(0,1),(0,2),(0,3)]`
+   - :math:`n \in v \rightarrow s.pop()`
+   - new :math:`s[(0,2),(0,1),(0,0)]`
+
+----
+
+The algorithm cannot explore East or West due to walls, and cannot go North or South because these nodes have already been visited (:math:`(0,3) \in v` and :math:`(0,1) \in v`). DFS will backtrack to the previous node in the stack.
+
+.. only:: html
+
+        .. raw:: html
+
+            <div style="display:flex; justify-content:center; align-items:center; gap:1rem;">
+                <img src="../_static/rwa4/backtracking2_light.png"
+                    alt="Demo"
+                    class="only-light"
+                    style="width:30%; border-radius:8px;">
+                <img src="../_static/rwa4/backtracking2_dark.png"
+                    alt="Demo"
+                    class="only-dark"
+                    style="width:30%; border-radius:8px;">
+            </div>
+
+
+.. admonition:: Demo
+   :class: leftline
+
+   - :math:`s=[(0,2),(0,1),(0,0)]`
+   - :math:`n=(0,2)`
+   - :math:`v=[(0,0),(0,1),(0,2),(0,3)]`
+   - :math:`n \in v \rightarrow s.pop()`
+   - new :math:`s[(0,1),(0,0)]`
+
+----
+
+The algorithm cannot explore East or West due to walls, and cannot go North or South because these nodes have already been visited (:math:`(0,2) \in v` and :math:`(0,0) \in v`). DFS will backtrack to the previous node in the stack.
+
+.. only:: html
+
+        .. raw:: html
+
+            <div style="display:flex; justify-content:center; align-items:center; gap:1rem;">
+                <img src="../_static/rwa4/backtracking3_light.png"
+                    alt="Demo"
+                    class="only-light"
+                    style="width:30%; border-radius:8px;">
+                <img src="../_static/rwa4/backtracking3_dark.png"
+                    alt="Demo"
+                    class="only-dark"
+                    style="width:30%; border-radius:8px;">
+            </div>
+
+
+.. admonition:: Demo
+   :class: leftline
+
+   - :math:`s=[(0,1),(0,0)]`
+   - :math:`n=(0,1)`
+   - :math:`v=[(0,0),(0,1),(0,2),(0,3)]`
+   - :math:`n \in v \rightarrow s.pop()`
+   - new :math:`s[(0,0)]`
+
+----
+
+The East branch has not been explored (:math:`(1,0) \notin v`). DFS will continue with this branch.
+
+.. only:: html
+
+        .. raw:: html
+
+            <div style="display:flex; justify-content:center; align-items:center; gap:1rem;">
+                <img src="../_static/rwa4/backtracking4_light.png"
+                    alt="Demo"
+                    class="only-light"
+                    style="width:30%; border-radius:8px;">
+                <img src="../_static/rwa4/backtracking4_dark.png"
+                    alt="Demo"
+                    class="only-dark"
+                    style="width:30%; border-radius:8px;">
+            </div>
 
 ----------------
 Design Phase
@@ -850,7 +966,7 @@ Abstract Class and Polymorphism
 
 Define an abstract class representing a general maze-solving algorithm. This class must specify the interface shared by all algorithm implementations. Derived classes should override the relevant methods to implement their specific navigation logic.
 
-Polymorphism must be demonstrated by allowing the robot to hold a reference or pointer to the abstract base class and to invoke derived algorithm implementations at runtime. This enables flexible switching between algorithms without altering the robot’s logic.
+Polymorphism must be demonstrated by allowing the robot to hold a reference or pointer to the abstract base class and to invoke derived algorithm implementations at runtime. This enables flexible switching between algorithms without altering the robot's logic.
 
 Composition
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -981,7 +1097,7 @@ Use the checklist below to verify that your submission is complete and properly 
    * - [ ]
      - Implementation follows the design diagrams faithfully
    * - [ ]
-     - The project builds cleanly with :code:`-Wall -Wextra -pedantic-errors`
+     - The project builds cleanly with :code:`-Wall -Wextra -Werror -pedantic-errors`
    * - [ ]
      - The program runs successfully within the simulator without modification
    * - [ ]
@@ -1084,7 +1200,7 @@ C++{} Core Guidelines & Best Practices (10 pts)
    * - **Points**
      - **Criteria**
    * - 9-10 pts
-     - Strong adherence to C++ Core Guidelines and best practices (encapsulation, RAII, const-correctness, uniform initialization, clear ownership, error handling, naming consistency, no globals, warnings clean with :code:`-Wall -Wextra -pedantic-errors`).
+     - Strong adherence to C++ Core Guidelines and best practices (encapsulation, RAII, const-correctness, uniform initialization, clear ownership, error handling, naming consistency, no globals, warnings clean with :code:`-Wall -Wextra -Werror -pedantic-errors`).
    * - 6-8 pts
      - Generally good practices; a few inconsistencies (e.g., occasional non-const, mixed naming, minor warnings).
    * - 3-5 pts

@@ -1,32 +1,35 @@
 #pragma once
 
-#include "vehicle.hpp"
-#include "sensor.hpp"
-#include <vector>
 #include <memory>
+#include <vector>
 
-namespace transportation
-{
-    // Autonomous vehicle implementation.
-    class RoboTaxi : public Vehicle
-    {
-    public:
-        // Constructor
-        RoboTaxi(const std::string &id, int max_passengers)
-            : Vehicle(id, max_passengers) {}
+#include "sensor.hpp"
+#include "vehicle.hpp"
 
-        // Getters
-        [[nodiscard]] const std::vector<std::unique_ptr<Sensor>> &get_sensors() const noexcept { return sensors_; }
-        // No setter for list, use add_sensor
+namespace transportation {
+// Autonomous vehicle implementation.
+class RoboTaxi final : public Vehicle {
+ public:
+  // Constructor
+  RoboTaxi(const std::string& id, int max_passengers)
+      : Vehicle(id, max_passengers) {
+  }
 
-        // Overridden method
-        void drive();
+  // Getters
+  [[nodiscard]] const std::vector<std::unique_ptr<Sensor>>& get_sensors()
+      const noexcept {
+    return sensors_;
+  }
+  // No setter for list, use add_sensor
 
-        // Other methods
-        void add_sensor(std::unique_ptr<Sensor> sensor);
+  // Overridden method
+  virtual void drive() override;
 
-    private:
-        // RoboTaxi owns its sensors (Composition)
-        std::vector<std::unique_ptr<Sensor>> sensors_;
-    };
-} // namespace transportation
+  // Other methods
+  void add_sensor(std::unique_ptr<Sensor> sensor);
+
+ private:
+  // RoboTaxi owns its sensors (Composition)
+  std::vector<std::unique_ptr<Sensor>> sensors_;
+};
+}  // namespace transportation
